@@ -1,17 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GGRMLib.Models;
 
-namespace GGRMLib
+namespace GGRMLib.DataAccess
 {
     class SqlConnector : IDataConnection
     {
         public CustomerOrder CreateCO(CustomerOrder co)
         {
-            co.id = 4;
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(GlobalConfig.ConString("GGRM")))
+            {
+
+            }
+            //co.id = 4;
 
             return co;
         }
@@ -23,7 +28,7 @@ namespace GGRMLib
 
         public Customer CreateCustomer(Customer cust)
         {
-            cust.id = 10;
+            cust.ID = 10;
 
             return cust;
         }

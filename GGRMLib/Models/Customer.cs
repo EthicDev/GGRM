@@ -8,7 +8,7 @@ namespace GGRMLib.Models
 {
     public class Customer
     {
-        public int id { get; set; }
+        public int ID { get; set; }
 
         public Customer()
         {
@@ -17,21 +17,27 @@ namespace GGRMLib.Models
 
         public Customer(string custFirst, string custLast, string custPhone, string custAddress, string custCity, string custPostal, string custEmail)
         {
-
+            CustFirst = custFirst;
+            CustLast = custLast;
+            CustPhone = custPhone;
+            CustAddress = custAddress;
+            CustCity = custCity;
+            CustPostal = custPostal;
+            CustEmail = custEmail;
         }
 
-        public string custFirst { get; set; }
+        public string CustFirst { get; set; }
 
-        public string custLast { get; set; }
+        public string CustLast { get; set; }
 
-        public string custPhone { get; set; }
+        public string CustPhone { get; set; }
 
-        public string custAddress { get; set; }
+        public string CustAddress { get; set; }
 
-        public string custCity { get; set; }
+        public string CustCity { get; set; }
 
-        public string custPostal { get; set; }
+        public string CustPostal { get; set; }
 
-        public string custEmail { get; set; }
+        public string CustEmail { get; set; }
     }
 }

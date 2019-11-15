@@ -1,5 +1,7 @@
-﻿using System;
+﻿using GGRMLib.DataAccess;
+using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,6 +16,11 @@ namespace GGRMLib
         {
             SqlConnector sql = new SqlConnector();
             Connections.Add(sql);
+        }
+
+        public static string ConString(string name)
+        {
+            return ConfigurationManager.ConnectionStrings[name].ConnectionString;
         }
     }
 }
