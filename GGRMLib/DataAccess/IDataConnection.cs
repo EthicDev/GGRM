@@ -9,10 +9,10 @@ namespace GGRMLib.DataAccess
 {
     public interface IDataConnection
     {
-        CustomerOrderLine CreateCOLine(CustomerOrderLine col);
+        CustomerOrderLine CreateCOLine(CustomerOrderLine col, out string status);
 
-        CustomerOrder CreateCO(CustomerOrder co);
+        CustomerOrder CreateCO(CustomerOrder co, out string status);
 
-        Customer CreateCustomer(Customer cust);
+        Customer CreateCustomer(Customer cust, out string status);
     }
 }
