@@ -25,14 +25,19 @@ namespace GGRMLib.DataAccess
 
         public CustomerOrderLine CreateCOLine(CustomerOrderLine col, out string status)
         {
-            throw new NotImplementedException();
+            status = "COLine creation failed.";
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(GlobalConfig.ConString("GGRM")))
+            {
+
+            }
+            return col;
         }
 
         public Customer CreateCustomer(Customer cust, out string status)
         {
             status = "Customer insertion failed.";
-            //try
-            //{
+            try
+            {
                 using (IDbConnection connection = new SqlConnection(GlobalConfig.ConString("GGRM")))
                 {
                     connection.Open();
@@ -53,7 +58,7 @@ namespace GGRMLib.DataAccess
                     }
                 }
                 status = "Customer insertion successful.";
-            //} catch (Exception ex) { status = ex.Message; }
+            } catch (Exception ex) { status = ex.Message; }
             return cust;
         }
     }
