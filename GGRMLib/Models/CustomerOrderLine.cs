@@ -8,20 +8,20 @@ namespace GGRMLib.Models
 {
     public class CustomerOrderLine
     {
-        public int id { get; set; }
+        public int ID { get; set; }
 
-        public double colPrice { get; set; }
+        public double ColPrice { get; set; }
 
-        public int colQuantity { get; set; }
+        public int ColQuantity { get; set; }
 
-        public string colNote { get; set; }
+        public string ColNote { get; set; }
 
-        public bool? underWarranty { get; set; }
+        public bool? UnderWarranty { get; set; }
 
-        public int? inventoryID { get; set; }
+        public int? InventoryID { get; set; }
 
-        public int? serviceID { get; set; }
+        public int? ServiceID { get; set; }
 
-        public int orderID { get; set; }
+        public int OrderID { get; set; }
     }
 }

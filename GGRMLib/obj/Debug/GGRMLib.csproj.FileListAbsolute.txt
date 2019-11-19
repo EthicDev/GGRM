@@ -3,3 +3,6 @@ C:\Users\Mack\Desktop\Github\ggrm-lib\GGRMLib\bin\Debug\GGRMLib.pdb
 C:\Users\Mack\Desktop\Github\ggrm-lib\GGRMLib\obj\Debug\GGRMLib.csprojAssemblyReference.cache
 C:\Users\Mack\Desktop\Github\ggrm-lib\GGRMLib\obj\Debug\GGRMLib.dll
 C:\Users\Mack\Desktop\Github\ggrm-lib\GGRMLib\obj\Debug\GGRMLib.pdb
+C:\Users\Mack\Desktop\Github\ggrm-lib\GGRMLib\bin\Debug\Emmas.mdf
+C:\Users\Mack\Desktop\Github\ggrm-lib\GGRMLib\bin\Debug\Emmas_log.ldf
+C:\Users\Mack\Desktop\Github\ggrm-lib\GGRMLib\bin\Debug\GGRMLib.dll.config

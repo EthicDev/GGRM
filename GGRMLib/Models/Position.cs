@@ -8,5 +8,8 @@ namespace GGRMLib.Models
 {
     class Position
     {
+        public int ID { get; set; }
+
+        public string PosName { get; set; }
     }
 }
