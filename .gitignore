@@ -1,0 +1,4 @@
+# Generated files
+GGRMLib/bin/
+GGRMLib/obj/
+*.suo
