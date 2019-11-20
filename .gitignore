@@ -4,3 +4,6 @@
 # Generated files
 GGRMLib/bin/
 GGRMLib/obj/
+
+# Lib app config
+app.config

@@ -992,7 +992,7 @@ namespace GGRMLib.DataSet_CustomersTableAdapters {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
         private void InitConnection() {
             this._connection = new global::System.Data.SqlClient.SqlConnection();
-            this._connection.ConnectionString = global::GGRMLib.Properties.Settings.Default.EmmasConnectionString;
+            this._connection.ConnectionString = global::GGRMLib.Properties.Settings.Default.GGRM;
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
