@@ -21,5 +21,7 @@ namespace GGRMLib.DataAccess
         DataTable GetCustomersDataTable(out string status);
 
         Customer GetCustomerByID(int id, out string status);
+
+        int AuthenticateLogin(string user, string password, out string status);
     }
 }

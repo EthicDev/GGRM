@@ -11,7 +11,7 @@ namespace GGRMLib.DataAccess
 {
     public class SqlConnector : IDataConnection
     {
-        //CustomerOrder Methods
+        //CustomerOrder
         public CustomerOrder CreateCO(CustomerOrder co, out string status)
         {
             status = "CustomerOrder creation failed.";
@@ -24,7 +24,7 @@ namespace GGRMLib.DataAccess
             return co;
         }
 
-        //CustomerOrderLine Methods
+        //CustomerOrderLine
         public CustomerOrderLine CreateCOLine(CustomerOrderLine col, out string status)
         {
             status = "COLine creation failed.";
@@ -35,7 +35,7 @@ namespace GGRMLib.DataAccess
             return col;
         }
 
-        //Customer Methods
+        //Customer
         public Customer CreateCustomer(Customer cust, out string status)
         {
             status = "Customer insertion failed.";
@@ -149,6 +149,42 @@ namespace GGRMLib.DataAccess
             catch (Exception ex) { status = ex.Message; }
 
             return cust;
+        }
+
+        //Authentication
+
+        public int AuthenticateLogin(string user, string password, out string status)
+        {
+            int empID = -1;
+            status = "Authentication process failed.";
+            try
+            {
+                using (IDbConnection connection = new SqlConnection(GlobalConfig.ConString("GGRM")))
+                {
+                    connection.Open();
+                    SqlCommand cmd = new SqlCommand();
+                    cmd.Connection = (SqlConnection)connection;
+                    cmd.CommandText = "SELECT id, empUser, empPassword FROM employee WHERE empUser = '" + user +"'";
+                    SqlDataReader records = cmd.ExecuteReader();
+                    if (records.Read())
+                    {
+                       if (password == records.GetString(2))
+                        {
+                            status = "Authentication successful.";
+                            empID = records.GetInt32(0);
+                        } else
+                        {
+                            status = "Password incorrect.";
+                        }
+                    } else
+                    {
+                        status = "Username does not exist.";
+                    }
+                }
+            }
+            catch (Exception ex) { status = ex.Message; }
+
+            return empID;
         }
     }
 }
