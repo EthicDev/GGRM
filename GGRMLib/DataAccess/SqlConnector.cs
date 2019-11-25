@@ -9,7 +9,7 @@ using GGRMLib.Models;
 
 namespace GGRMLib.DataAccess
 {
-    public class SqlConnector : IDataConnection
+    public class SqlConnector /*: IDataConnection*/
     {
         //CustomerOrder
         public CustomerOrder CreateCO(CustomerOrder co, out string status)
@@ -65,6 +65,33 @@ namespace GGRMLib.DataAccess
             return cust;
         }
 
+        public Customer EditCustomer(Customer cust, out string status)
+        {
+            status = "Customer update failed.";
+            try
+            {
+                using (IDbConnection connection = new SqlConnection(GlobalConfig.ConString("GGRM")))
+                {
+                    connection.Open();
+                    SqlCommand cmd = new SqlCommand();
+                    cmd.Connection = (SqlConnection)connection;
+                    cmd.CommandText = "UPDATE customer SET" +
+                        " custFirst = '" + cust.CustFirst + "',"
+                        + " custLast = '" + cust.CustLast + "',"
+                        + " custPhone = '" + cust.CustPhone + "',"
+                        + " custAddress = '" + cust.CustAddress + "',"
+                        + " custCity = '" + cust.CustCity + "',"
+                        + " custPostal = '" + cust.CustPostal + "',"
+                        + " custEmail = '" + cust.CustEmail + "'"
+                        + " WHERE id = " + cust.ID;
+                    cmd.ExecuteNonQuery();
+                }
+                status = "Customer update succeeded.";
+            }
+            catch (Exception ex) { status = ex.Message; }
+            return cust;
+        }
+
         public List<Customer> GetCustomersList(out string status)
         {
             List<Customer> customers = new List<Customer>();
@@ -99,7 +126,7 @@ namespace GGRMLib.DataAccess
             return customers;
         }
 
-        public DataTable GetCustomersDataTable(out string status)
+        public DataTable GetCustomersDataTable(out string status, string searchString = "")
         {
             DataTable dtCustomers = new DataTable();
 
@@ -109,7 +136,7 @@ namespace GGRMLib.DataAccess
                 using (SqlConnection conn = new SqlConnection(GlobalConfig.ConString("GGRM")))
                 {
                     conn.Open();
-                    string sqlCommand = "SELECT id, custLast+', '+custFirst AS Name, custPhone AS Phone, custAddress AS Address, custCity AS City, custPostal AS [Postal Code], custEmail AS Email FROM customer ORDER BY custLast";
+                    string sqlCommand = "SELECT id, custLast+', '+custFirst AS Name, custPhone AS Phone, custAddress AS Address, custCity AS City, custPostal AS [Postal Code], custEmail AS Email FROM customer WHERE custFirst LIKE '%"+searchString+ "%' OR custLast LIKE '%" + searchString + "%' ORDER BY custLast ";
                     SqlDataAdapter sqlDa = new SqlDataAdapter(sqlCommand, conn);
                     sqlDa.Fill(dtCustomers);
                 }
@@ -149,6 +176,36 @@ namespace GGRMLib.DataAccess
             catch (Exception ex) { status = ex.Message; }
 
             return cust;
+        }
+
+        // Employee
+
+        public Employee CreateEmployee(Employee emp, out string status)
+        {
+            status = "Employee insertion failed.";
+            try
+            {
+                using (IDbConnection connection = new SqlConnection(GlobalConfig.ConString("GGRM")))
+                {
+                    connection.Open();
+                    SqlCommand cmd = new SqlCommand();
+                    cmd.Connection = (SqlConnection)connection;
+                    cmd.CommandText = "EXEC spEmployee_Insert" +
+                        " @empFirst = '" + emp.EmpFirst + "',"
+                        + " @empLast = '" + emp.EmpLast + "',"
+                        + " @posID = " + emp.PosID + ","
+                        + " @empUser = '" + emp.EmpUser + "',"
+                        + " @empPassword = '" + emp.EmpPassword + "'";
+                    SqlDataReader records = cmd.ExecuteReader();
+                    if (records.Read())
+                    {
+                        emp.ID = records.GetInt32(0);
+                    }
+                }
+                status = "Employee insertion succeeded.";
+            }
+            catch (Exception ex) { status = ex.Message; }
+            return emp;
         }
 
         //Authentication

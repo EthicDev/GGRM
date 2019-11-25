@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GGRMLib.Models
 {
-    class Employee
+    public class Employee
     {
         public int ID { get; set; }
 
@@ -15,5 +15,9 @@ namespace GGRMLib.Models
         public string EmpLast { get; set; }
 
         public int PosID { get; set; }
+
+        public string EmpUser { get; set; }
+
+        public string EmpPassword { internal get; set; }
     }
 }

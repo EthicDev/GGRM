@@ -10,7 +10,7 @@ namespace GGRMLib
 {
     public static class GlobalConfig
     {
-        public static IDataConnection Connection { get; private set; }
+        public static SqlConnector Connection { get; private set; }
 
         public static void InitializeConnections()
         {
