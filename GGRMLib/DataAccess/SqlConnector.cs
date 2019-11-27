@@ -231,6 +231,30 @@ namespace GGRMLib.DataAccess
             return dtInventory;
         }
 
+        public Inventory EditInventoryItem(Inventory inv, out string status)
+        {
+            status = "Inventory update failed.";
+            try
+            {
+                using (IDbConnection connection = new SqlConnection(GlobalConfig.ConString("GGRM")))
+                {
+                    connection.Open();
+                    SqlCommand cmd = new SqlCommand();
+                    cmd.Connection = (SqlConnection)connection;
+                    cmd.CommandText = "UPDATE inventory SET" +
+                        " invQuantity = '" + inv.InvQuantity + "',"
+                        + " invSize = '" + inv.InvSize + "',"
+                        + " invMeasure = '" + inv.InvMeasure + "',"
+                        + " invPrice = '" + inv.InvPrice + "'"
+                        + " WHERE id = " + inv.ID;
+                    cmd.ExecuteNonQuery();
+                }
+                status = "Inventory update succeeded.";
+            }
+            catch (Exception ex) { status = ex.Message; }
+            return inv;
+        }
+
         //Authentication
 
         public int AuthenticateLogin(string user, string password, out string status)
