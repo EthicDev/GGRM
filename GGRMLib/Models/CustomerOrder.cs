@@ -6,20 +6,20 @@ using System.Threading.Tasks;
 
 namespace GGRMLib.Models
 {
-    public class CustomerOrder
+    class CustomerOrder
     {
-        public int id { get; set; }
+        public int ID { get; set; }
 
-        public int ordNumber { get; set; }
+        public int OrdNumber { get; set; }
 
-        public bool ordPaid { get; set; }
+        public DateTime OrdCreationDate { get; set; }
 
-        public DateTime ordDate { get; set; }
+        public bool OrdPaid { get; set; }
 
-        public int paymentID { get; set; }
+        public int PaymentID { get; set; }
 
-        public int custID { get; set; }
+        public int CustID { get; set; }
 
-        public int empID { get; set; }
+        public int EmpID { get; set; }
     }
 }

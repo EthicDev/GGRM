@@ -276,6 +276,29 @@ namespace GGRMLib.DataAccess
             return inv;
         }
 
+        // Repairs
+
+        public DataTable GetPendingServicesDataTable (out string status, string searchString = "")
+        {
+            DataTable dtPendingServices = new DataTable();
+
+            status = "Getting services failed.";
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(GlobalConfig.ConString("GGRM")))
+                {
+                    conn.Open();
+                    string sqlCommand = "SELECT receiptID, eqtType, serordDateIn, serordIssue, serordWarranty, serordStatus FROM service_order JOIN receipt ON receipt.id = service_order.receiptID JOIN equipment ON service_order.equipID = equipment.ID JOIN equip_type ON equip_type.id = equipment.equtypeID";
+                    SqlDataAdapter sqlDa = new SqlDataAdapter(sqlCommand, conn);
+                    sqlDa.Fill(dtPendingServices);
+                }
+                status = "Getting services succeeded.";
+            }
+            catch (Exception ex) { status = ex.Message; }
+
+            return dtPendingServices;
+        }
+
         //Authentication
 
         public int AuthenticateLogin(string user, string password, out string status)
