@@ -231,6 +231,27 @@ namespace GGRMLib.DataAccess
             return dtInventory;
         }
 
+        public DataTable GetInventoryDataTableShort(out string status, string searchString = "")
+        {
+            DataTable dtInventory = new DataTable();
+
+            status = "Getting inventory failed.";
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(GlobalConfig.ConString("GGRM")))
+                {
+                    conn.Open();
+                    string sqlCommand = "SELECT prodName AS [Name], prodDescription AS [Description], prodBrand AS [Brand], CONVERT(varchar,invSize) + ' ' + invMeasure AS [Size]  FROM inventory JOIN product ON inventory.productID = product.id WHERE prodName LIKE '%" + searchString + "%'";
+                    SqlDataAdapter sqlDa = new SqlDataAdapter(sqlCommand, conn);
+                    sqlDa.Fill(dtInventory);
+                }
+                status = "Getting inventory succeeded.";
+            }
+            catch (Exception ex) { status = ex.Message; }
+
+            return dtInventory;
+        }
+
         public Inventory EditInventoryItem(Inventory inv, out string status)
         {
             status = "Inventory update failed.";
