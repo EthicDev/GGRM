@@ -92,7 +92,7 @@ namespace GGRMLib.DataAccess
             return cust;
         }
 
-        public List<Customer> GetCustomersList(out string status)
+        public List<Customer> GetCustomersList(out string status, string searchString = "")
         {
             List<Customer> customers = new List<Customer>();
 
@@ -104,7 +104,7 @@ namespace GGRMLib.DataAccess
                     connection.Open();
                     SqlCommand cmd = new SqlCommand();
                     cmd.Connection = (SqlConnection)connection;
-                    cmd.CommandText = "SELECT id, custFirst, custLast, custPhone, custAddress, custCity, custPostal, custEmail FROM customer ORDER BY custLast";
+                    cmd.CommandText = "SELECT id, custFirst, custLast, custPhone, custAddress, custCity, custPostal, custEmail FROM customer WHERE custFirst LIKE '%" + searchString + "%' OR custLast LIKE '%" + searchString + "%' ORDER BY custLast";
                     SqlDataReader records = cmd.ExecuteReader();
                     while (records.Read())
                     {
@@ -136,7 +136,7 @@ namespace GGRMLib.DataAccess
                 using (SqlConnection conn = new SqlConnection(GlobalConfig.ConString("GGRM")))
                 {
                     conn.Open();
-                    string sqlCommand = "SELECT id, custLast+', '+custFirst AS Name, custPhone AS Phone, custAddress AS Address, custCity AS City, custPostal AS [Postal Code], custEmail AS Email FROM customer WHERE custFirst LIKE '%"+searchString+ "%' OR custLast LIKE '%" + searchString + "%' ORDER BY custLast ";
+                    string sqlCommand = "SELECT id, custLast+', '+custFirst AS Name, custPhone AS Phone, custAddress AS Address, custCity AS City, custPostal AS [Postal Code], custEmail AS Email FROM customer WHERE custFirst LIKE '%"+searchString+ "%' OR custLast LIKE '%" + searchString + "%' ORDER BY custLast";
                     SqlDataAdapter sqlDa = new SqlDataAdapter(sqlCommand, conn);
                     sqlDa.Fill(dtCustomers);
                 }
@@ -251,6 +251,40 @@ namespace GGRMLib.DataAccess
 
             return dtInventory;
         }
+
+        //public List<Inventory> GetInventoryList(out string status, string searchString = "")
+        //{
+        //    List<Inventory> listInv = new List<Inventory>();
+
+        //    status = "Getting inventory failed.";
+        //    try
+        //    {
+        //        using (IDbConnection connection = new SqlConnection(GlobalConfig.ConString("GGRM")))
+        //        {
+        //            connection.Open();
+        //            SqlCommand cmd = new SqlCommand();
+        //            cmd.Connection = (SqlConnection)connection;
+        //            cmd.CommandText = "SELECT inventory.id, prodName, prodDescription, prodBrand, invQuantity, invSize, invMeasure, invPrice FROM inventory JOIN product ON inventory.productID = product.id WHERE prodName LIKE '%" + searchString + "%'";
+        //            SqlDataReader records = cmd.ExecuteReader();
+        //            while (records.Read())
+        //            {
+        //                Customer cust = new Customer(records.GetString(1),
+        //                    records.GetString(2),
+        //                    records.GetString(3),
+        //                    records.GetString(4),
+        //                    records.GetString(5),
+        //                    records.GetString(6),
+        //                    records.GetString(7));
+        //                cust.ID = records.GetInt32(0);
+        //                customers.Add(cust);
+        //            }
+        //        }
+        //        status = "Getting customers succeeded.";
+        //    }
+        //    catch (Exception ex) { status = ex.Message; }
+
+        //    return customers;
+        //}
 
         public Inventory EditInventoryItem(Inventory inv, out string status)
         {
