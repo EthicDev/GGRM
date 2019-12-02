@@ -12,25 +12,54 @@ namespace GGRMLib.DataAccess
     public class SqlConnector /*: IDataConnection*/
     {
         //CustomerOrder
-        public CustomerOrder CreateCO(CustomerOrder co, out string status)
+        public CustomerOrder CreateCustomerOrder(CustomerOrder co, out string status)
         {
             status = "CustomerOrder creation failed.";
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(GlobalConfig.ConString("GGRM")))
             {
-
+                connection.Open();
+                SqlCommand cmd = new SqlCommand();
+                cmd.Connection = (SqlConnection)connection;
+                cmd.CommandText = "EXEC spCustomerOrder_Insert" +
+                    " @ordNumber = '" + co.OrdNumber + "',"
+                    + " @ordCreationDate = '" + co.OrdCreationDate + "',"
+                    + " @ordPaid = '" + co.OrdPaid + "',"
+                    + " @paymentID = '" + co.PaymentID + "',"
+                    + " @custID = '" + co.CustID + "',"
+                    + " @empID = '" + co.EmpID + "'";
+                SqlDataReader records = cmd.ExecuteReader();
+                if (records.Read())
+                {
+                    co.ID = records.GetInt32(0);
+                }
             }
-            //co.id = 4;
 
             return co;
         }
 
         //CustomerOrderLine
-        public CustomerOrderLine CreateCOLine(CustomerOrderLine col, out string status)
+        public CustomerOrderLine CreateCustomerOrderLine(CustomerOrderLine col, out string status)
         {
             status = "CustomerOrderLine insertion failed.";
             using (IDbConnection connection = new SqlConnection(GlobalConfig.ConString("GGRM")))
             {
-
+                connection.Open();
+                SqlCommand cmd = new SqlCommand();
+                cmd.Connection = (SqlConnection)connection;
+                cmd.CommandText = "EXEC spCustomerOrderLine_Insert" +
+                    " @orlPrice = '" + col.ColPrice + "',"
+                    + " @orlQuantity = '" + col.ColQuantity + "',"
+                    + " @orlOrderReq = '" + col.ColOrderReq + "',"
+                    + " @orlNote = '" + col.ColNote + "',"
+                    + " @orlWarranty = '" + col.ColUnderWarranty + "',"
+                    + " @serviceID = '" + col.ServiceID + "',"
+                    + " @inventoryID = '" + col.InventoryID + "',"
+                    + " @custOrdID = '" + col.OrderID + "'";
+                SqlDataReader records = cmd.ExecuteReader();
+                if (records.Read())
+                {
+                    col.ID = records.GetInt32(0);
+                }
             }
             return col;
         }

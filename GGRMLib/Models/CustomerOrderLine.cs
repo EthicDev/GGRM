@@ -14,9 +14,11 @@ namespace GGRMLib.Models
 
         public int ColQuantity { get; set; }
 
+        public bool ColOrderReq { get; set; }
+
         public string ColNote { get; set; }
 
-        public bool? UnderWarranty { get; set; }
+        public bool? ColUnderWarranty { get; set; }
 
         public int? InventoryID { get; set; }
 
