@@ -27,8 +27,8 @@ namespace GGRMLib.DataAccess
         //CustomerOrderLine
         public CustomerOrderLine CreateCOLine(CustomerOrderLine col, out string status)
         {
-            status = "COLine creation failed.";
-            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(GlobalConfig.ConString("GGRM")))
+            status = "CustomerOrderLine insertion failed.";
+            using (IDbConnection connection = new SqlConnection(GlobalConfig.ConString("GGRM")))
             {
 
             }
@@ -251,6 +251,38 @@ namespace GGRMLib.DataAccess
 
             return dtInventory;
         }
+
+        //public Inventory GetInventoryByID(int id, out string status)
+        //{
+        //    Inventory cust = new Inventory();
+        //    status = "Getting inventory failed.";
+        //    try
+        //    {
+        //        using (IDbConnection connection = new SqlConnection(GlobalConfig.ConString("GGRM")))
+        //        {
+        //            connection.Open();
+        //            SqlCommand cmd = new SqlCommand();
+        //            cmd.Connection = (SqlConnection)connection;
+        //            cmd.CommandText = "SELECT id, invQuantity, WHERE id = " + id.ToString();
+        //            SqlDataReader records = cmd.ExecuteReader();
+        //            if (records.Read())
+        //            {
+        //                cust = new Customer(records.GetString(1),
+        //                    records.GetString(2),
+        //                    records.GetString(3),
+        //                    records.GetString(4),
+        //                    records.GetString(5),
+        //                    records.GetString(6),
+        //                    records.GetString(7));
+        //                cust.ID = records.GetInt32(0);
+        //            }
+        //        }
+        //        status = "Getting customer succeeded.";
+        //    }
+        //    catch (Exception ex) { status = ex.Message; }
+
+        //    return cust;
+        //}
 
         //public List<Inventory> GetInventoryList(out string status, string searchString = "")
         //{
