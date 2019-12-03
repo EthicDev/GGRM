@@ -12,6 +12,26 @@ namespace GGRMLib.DataAccess
     public class SqlConnector /*: IDataConnection*/
     {
         //CustomerOrder
+
+        public int CustomerOrderNextID(out string status)
+        {
+            int nextID = -1;
+            status = "Getting CustomerOrderNextID failed.";
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(GlobalConfig.ConString("GGRM")))
+            {
+                connection.Open();
+                SqlCommand cmd = new SqlCommand();
+                cmd.Connection = (SqlConnection)connection;
+                cmd.CommandText = "SELECT MAX(ID) FROM customer_order";
+                SqlDataReader records = cmd.ExecuteReader();
+                if (records.Read())
+                {
+                    nextID = records.GetInt32(0)+1;
+                }
+            }
+
+            return nextID;
+    }
         public CustomerOrder CreateCustomerOrder(CustomerOrder co, out string status)
         {
             status = "CustomerOrder creation failed.";
@@ -73,7 +93,7 @@ namespace GGRMLib.DataAccess
                 using (IDbConnection connection = new SqlConnection(GlobalConfig.ConString("GGRM")))
                 {
                     connection.Open();
-                    SqlCommand cmd = new SqlCommand();
+                    using SqlCommand cmd = new SqlCommand();
                     cmd.Connection = (SqlConnection)connection;
                     cmd.CommandText = "EXEC spCustomer_Insert" +
                         " @custFirst = '" + cust.CustFirst + "',"
@@ -82,8 +102,9 @@ namespace GGRMLib.DataAccess
                         + " @custAddress = '" + cust.CustAddress + "',"
                         + " @custCity = '" + cust.CustCity + "',"
                         + " @custPostal = '" + cust.CustPostal + "',"
-                        + " @custEmail = '" + cust.CustEmail +"'";
+                        + " @custEmail = '" + cust.CustEmail + "'";
                     SqlDataReader records = cmd.ExecuteReader();
+
                     if (records.Read())
                     {
                         cust.ID = records.GetInt32(0);
@@ -270,7 +291,7 @@ namespace GGRMLib.DataAccess
                 using (SqlConnection conn = new SqlConnection(GlobalConfig.ConString("GGRM")))
                 {
                     conn.Open();
-                    string sqlCommand = "SELECT prodName AS [Name], prodDescription AS [Description], prodBrand AS [Brand], CONVERT(varchar,invSize) + ' ' + invMeasure AS [Size]  FROM inventory JOIN product ON inventory.productID = product.id WHERE prodName LIKE '%" + searchString + "%'";
+                    string sqlCommand = "SELECT inventory.id, prodName AS [Name], prodDescription AS [Description], prodBrand AS [Brand], CONVERT(varchar,invSize) + ' ' + invMeasure AS [Size], invPrice AS [Price] FROM inventory JOIN product ON inventory.productID = product.id WHERE prodName LIKE '%" + searchString + "%'";
                     SqlDataAdapter sqlDa = new SqlDataAdapter(sqlCommand, conn);
                     sqlDa.Fill(dtInventory);
                 }
@@ -384,8 +405,9 @@ namespace GGRMLib.DataAccess
                 {
                     conn.Open();
                     string sqlCommand = "SELECT receiptID, eqtType, serordDateIn, serordIssue, serordWarranty, serordStatus FROM service_order JOIN receipt ON receipt.id = service_order.receiptID JOIN equipment ON service_order.equipID = equipment.ID JOIN equip_type ON equip_type.id = equipment.equtypeID";
-                    SqlDataAdapter sqlDa = new SqlDataAdapter(sqlCommand, conn);
+                    using SqlDataAdapter sqlDa = new SqlDataAdapter(sqlCommand, conn);
                     sqlDa.Fill(dtPendingServices);
+
                 }
                 status = "Getting services succeeded.";
             }
@@ -402,27 +424,27 @@ namespace GGRMLib.DataAccess
             status = "Authentication process failed.";
             try
             {
-                using (IDbConnection connection = new SqlConnection(GlobalConfig.ConString("GGRM")))
+                using IDbConnection connection = new SqlConnection(GlobalConfig.ConString("GGRM"));
+                connection.Open();
+                SqlCommand cmd = new SqlCommand();
+                cmd.Connection = (SqlConnection)connection;
+                cmd.CommandText = "SELECT id, empUser, empPassword FROM employee WHERE empUser = '" + user + "'";
+                SqlDataReader records = cmd.ExecuteReader();
+                if (records.Read())
                 {
-                    connection.Open();
-                    SqlCommand cmd = new SqlCommand();
-                    cmd.Connection = (SqlConnection)connection;
-                    cmd.CommandText = "SELECT id, empUser, empPassword FROM employee WHERE empUser = '" + user +"'";
-                    SqlDataReader records = cmd.ExecuteReader();
-                    if (records.Read())
+                    if (password == records.GetString(2))
                     {
-                       if (password == records.GetString(2))
-                        {
-                            status = "Authentication successful.";
-                            empID = records.GetInt32(0);
-                        } else
-                        {
-                            status = "Password incorrect.";
-                        }
-                    } else
-                    {
-                        status = "Username does not exist.";
+                        status = "Authentication successful.";
+                        empID = records.GetInt32(0);
                     }
+                    else
+                    {
+                        status = "Password incorrect.";
+                    }
+                }
+                else
+                {
+                    status = "Username does not exist.";
                 }
             }
             catch (Exception ex) { status = ex.Message; }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,6 +9,12 @@ namespace GGRMLib.Models
 {
     public class CustomerOrder
     {
+        public CustomerOrder()
+        {
+            ID = -1;
+            orderLines = new BindingList<CustomerOrderLine>();
+        }
+
         public int ID { get; set; }
 
         public int OrdNumber { get; set; }
@@ -21,5 +28,7 @@ namespace GGRMLib.Models
         public int CustID { get; set; }
 
         public int EmpID { get; set; }
+
+        public BindingList<CustomerOrderLine> orderLines { get; set; }
     }
 }

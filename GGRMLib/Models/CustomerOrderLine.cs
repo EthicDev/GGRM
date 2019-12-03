@@ -10,7 +10,7 @@ namespace GGRMLib.Models
     {
         public int ID { get; set; }
 
-        public double ColPrice { get; set; }
+        public decimal ColPrice { get; set; }
 
         public int ColQuantity { get; set; }
 
@@ -18,11 +18,11 @@ namespace GGRMLib.Models
 
         public string ColNote { get; set; }
 
-        public bool? ColUnderWarranty { get; set; }
+        public bool ColUnderWarranty { get; set; }
 
-        public int? InventoryID { get; set; }
+        public int InventoryID { get; set; }
 
-        public int? ServiceID { get; set; }
+        public int ServiceID { get; set; }
 
         public int OrderID { get; set; }
     }
