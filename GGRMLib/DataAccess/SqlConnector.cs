@@ -415,6 +415,28 @@ namespace GGRMLib.DataAccess
             return dtPendingServices;
         }
 
+        public DataTable GetServiceTypesDataTable (out string status)
+        {
+            DataTable dtServiceTypes = new DataTable();
+
+            status = "Getting services failed.";
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(GlobalConfig.ConString("GGRM")))
+                {
+                    conn.Open();
+                    string sqlCommand = "SELECT id, serName, serDescription, serPrice FROM service";
+                    using SqlDataAdapter sqlDa = new SqlDataAdapter(sqlCommand, conn);
+                    sqlDa.Fill(dtServiceTypes);
+
+                }
+                status = "Getting services succeeded.";
+            }
+            catch (Exception ex) { status = ex.Message; }
+
+            return dtServiceTypes;
+        }
+
         // Equipment
 
         public DataTable GetEquipmentByCustID (int custID, out string status)
@@ -426,7 +448,7 @@ namespace GGRMLib.DataAccess
                 using (SqlConnection conn = new SqlConnection(GlobalConfig.ConString("GGRM")))
                 {
                     conn.Open();
-                    string sqlCommand = "SELECT id, equModel, equSerial, custID, equtypeID, equManuID FROM equipment WHERE custID = " + custID.ToString();
+                    string sqlCommand = "SELECT equipment.id, eqtType + ' - ' + equModel AS [Info], equModel, equSerial, custID, equtypeID, equManuID FROM equipment JOIN equip_type ON equipment.equtypeID = equip_type.id WHERE custID = " + custID.ToString();
                     using SqlDataAdapter sqlDa = new SqlDataAdapter(sqlCommand, conn);
                     sqlDa.Fill(dtEquipment);
                 }

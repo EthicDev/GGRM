@@ -13,6 +13,7 @@ namespace GGRMLib.Models
         {
             ID = -1;
             orderLines = new BindingList<CustomerOrderLine>();
+            serviceOrders = new BindingList<ServiceOrder>();
         }
 
         public int ID { get; set; }
@@ -30,5 +31,6 @@ namespace GGRMLib.Models
         public int EmpID { get; set; }
 
         public BindingList<CustomerOrderLine> orderLines { get; set; }
+        public BindingList<ServiceOrder> serviceOrders { get; set; }
     }
 }

@@ -79,6 +79,8 @@
     <Compile Include="Models\Product.cs" />
     <Compile Include="Models\ProductOrder.cs" />
     <Compile Include="Models\CustomerOrder.cs" />
+    <Compile Include="Models\Service.cs" />
+    <Compile Include="Models\ServiceOrder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DataAccess\SqlConnector.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
