@@ -270,7 +270,7 @@ namespace GGRMLib.DataAccess
                 using (SqlConnection conn = new SqlConnection(GlobalConfig.ConString("GGRM")))
                 {
                     conn.Open();
-                    string sqlCommand = "SELECT inventory.id, prodName AS [Name], prodDescription AS [Description], prodBrand AS [Brand], invQuantity AS [Quantity], CONVERT(varchar,invSize) + ' ' + invMeasure AS [Size], invPrice AS [Unit Price] FROM inventory JOIN product ON inventory.productID = product.id WHERE prodName LIKE '%" + searchString + "%'";
+                    string sqlCommand = "SELECT inventory.id, prodName AS [Name], prodDescription AS [Description], prodBrand AS [Brand], invQuantity AS [Quantity], CONVERT(varchar,prodSize) + ' ' + prodMeasure AS [Size], invPrice AS [Unit Price] FROM inventory JOIN product ON inventory.productID = product.id WHERE prodName LIKE '%" + searchString + "%'";
                     SqlDataAdapter sqlDa = new SqlDataAdapter(sqlCommand, conn);
                     sqlDa.Fill(dtInventory);
                 }
@@ -291,7 +291,7 @@ namespace GGRMLib.DataAccess
                 using (SqlConnection conn = new SqlConnection(GlobalConfig.ConString("GGRM")))
                 {
                     conn.Open();
-                    string sqlCommand = "SELECT inventory.id, prodName AS [Name], prodDescription AS [Description], prodBrand AS [Brand], CONVERT(varchar,invSize) + ' ' + invMeasure AS [Size], invPrice AS [Price] FROM inventory JOIN product ON inventory.productID = product.id WHERE prodName LIKE '%" + searchString + "%'";
+                    string sqlCommand = "SELECT inventory.id, prodName AS [Name], prodDescription AS [Description], prodBrand AS [Brand], CONVERT(varchar,prodSize) + ' ' + prodMeasure AS [Size], invPrice AS [Price] FROM inventory JOIN product ON inventory.productID = product.id WHERE prodName LIKE '%" + searchString + "%'";
                     SqlDataAdapter sqlDa = new SqlDataAdapter(sqlCommand, conn);
                     sqlDa.Fill(dtInventory);
                 }
@@ -380,8 +380,6 @@ namespace GGRMLib.DataAccess
                     cmd.Connection = (SqlConnection)connection;
                     cmd.CommandText = "UPDATE inventory SET" +
                         " invQuantity = '" + inv.InvQuantity + "',"
-                        + " invSize = '" + inv.InvSize + "',"
-                        + " invMeasure = '" + inv.InvMeasure + "',"
                         + " invPrice = '" + inv.InvPrice + "'"
                         + " WHERE id = " + inv.ID;
                     cmd.ExecuteNonQuery();
@@ -393,6 +391,7 @@ namespace GGRMLib.DataAccess
         }
 
         // Repairs
+
 
         public DataTable GetPendingServicesDataTable (out string status, string searchString = "")
         {
@@ -414,6 +413,28 @@ namespace GGRMLib.DataAccess
             catch (Exception ex) { status = ex.Message; }
 
             return dtPendingServices;
+        }
+
+        // Equipment
+
+        public DataTable GetEquipmentByCustID (int custID, out string status)
+        {
+            DataTable dtEquipment = new DataTable();
+            status = "Getting equipment failed.";
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(GlobalConfig.ConString("GGRM")))
+                {
+                    conn.Open();
+                    string sqlCommand = "SELECT id, equModel, equSerial, custID, equtypeID, equManuID FROM equipment WHERE custID = " + custID.ToString();
+                    using SqlDataAdapter sqlDa = new SqlDataAdapter(sqlCommand, conn);
+                    sqlDa.Fill(dtEquipment);
+                }
+                status = "Getting equipment succeeded.";
+            }
+            catch (Exception ex) { status = ex.Message; }
+
+            return dtEquipment;
         }
 
         //Authentication
