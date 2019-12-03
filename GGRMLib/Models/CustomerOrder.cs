@@ -12,6 +12,8 @@ namespace GGRMLib.Models
         public CustomerOrder()
         {
             ID = -1;
+            PaymentID = -1;
+            OrdPaid = false;
             orderLines = new BindingList<CustomerOrderLine>();
             serviceOrders = new BindingList<ServiceOrder>();
         }

@@ -392,6 +392,32 @@ namespace GGRMLib.DataAccess
 
         // Repairs
 
+        public ServiceOrder CreateServiceOrder (ServiceOrder so, out string status)
+        {
+            status = "ServiceOrder insertion failed.";
+            using (IDbConnection connection = new SqlConnection(GlobalConfig.ConString("GGRM")))
+            {
+                connection.Open();
+                SqlCommand cmd = new SqlCommand();
+                cmd.Connection = (SqlConnection)connection;
+                cmd.CommandText = "EXEC spServiceOrder_Insert" +
+                    " @serordDateIn = '" + so.SerOrdDateIn + "',"
+                    + " @serordDateOut = '" + so.SerOrdDateOut + "',"
+                    + " @serordIssue = '" + so.SerOrdIssue + "',"
+                    + " @serordWarranty = '" + so.SerOrdWarranty + "',"
+                    + " @serordStatus = '" + so.SerOrdStatus + "',"
+                    + " @serviceID = '" + so.ServiceID + "',"
+                    + " @equipID = '" + so.EquipID + "',"
+                    + " @empID = '" + so.EmpID + "',"
+                    + " @custOrdID = '" + so.CustOrdID + "'";
+                SqlDataReader records = cmd.ExecuteReader();
+                if (records.Read())
+                {
+                    so.ID = records.GetInt32(0);
+                }
+            }
+            return so;
+        }
 
         public DataTable GetPendingServicesDataTable (out string status, string searchString = "")
         {
