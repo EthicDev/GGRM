@@ -18,8 +18,6 @@ namespace GGRMLib.Models
 
         public string ColNote { get; set; }
 
-        public bool ColUnderWarranty { get; set; }
-
         public int InventoryID { get; set; }
 
         public int ServiceID { get; set; }

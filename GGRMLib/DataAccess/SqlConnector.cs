@@ -71,7 +71,6 @@ namespace GGRMLib.DataAccess
                     + " @orlQuantity = '" + col.ColQuantity + "',"
                     + " @orlOrderReq = '" + col.ColOrderReq + "',"
                     + " @orlNote = '" + col.ColNote + "',"
-                    + " @orlWarranty = '" + col.ColUnderWarranty + "',"
                     + " @serviceID = '" + col.ServiceID + "',"
                     + " @inventoryID = '" + col.InventoryID + "',"
                     + " @custOrdID = '" + col.OrderID + "'";
@@ -390,7 +389,7 @@ namespace GGRMLib.DataAccess
             return inv;
         }
 
-        // Repairs
+        // Repairs (Services)
 
         public ServiceOrder CreateServiceOrder (ServiceOrder so, out string status)
         {
@@ -429,7 +428,7 @@ namespace GGRMLib.DataAccess
                 using (SqlConnection conn = new SqlConnection(GlobalConfig.ConString("GGRM")))
                 {
                     conn.Open();
-                    string sqlCommand = "SELECT receiptID, eqtType, serordDateIn, serordIssue, serordWarranty, serordStatus FROM service_order JOIN receipt ON receipt.id = service_order.receiptID JOIN equipment ON service_order.equipID = equipment.ID JOIN equip_type ON equip_type.id = equipment.equtypeID";
+                    string sqlCommand = "SELECT service_order.id, serordDateIn, serordIssue, serordWarranty, serordStatus, custOrdID, empID, serName, eqtType, equModel FROM service_order JOIN service ON service_order.serviceID = service.id JOIN equipment ON service_order.equipID = equipment.id JOIN equip_type ON equip_type.id = equipment.equtypeID WHERE serordStatus = 'Pending'";
                     using SqlDataAdapter sqlDa = new SqlDataAdapter(sqlCommand, conn);
                     sqlDa.Fill(dtPendingServices);
 
