@@ -257,6 +257,27 @@ namespace GGRMLib.DataAccess
             return emp;
         }
 
+        public DataTable GetEmployeeDataTable (out string status, string searchString = "")
+        {
+            DataTable dtEmployees = new DataTable();
+
+            status = "Getting employees failed.";
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(GlobalConfig.ConString("GGRM")))
+                {
+                    conn.Open();
+                    string sqlCommand = "SELECT employee.id, empFirst, empLast, posName FROM employee JOIN position ON employee.posID = position.id WHERE empFirst LIKE '%" + searchString + "%' OR empLast LIKE '%" + searchString + "%'";
+                    SqlDataAdapter sqlDa = new SqlDataAdapter(sqlCommand, conn);
+                    sqlDa.Fill(dtEmployees);
+                }
+                status = "Getting inventory succeeded.";
+            }
+            catch (Exception ex) { status = ex.Message; }
+
+            return dtEmployees;
+        }
+
         // Inventory
 
         public DataTable GetInventoryDataTable(out string status, string searchString = "")
@@ -483,6 +504,9 @@ namespace GGRMLib.DataAccess
 
             return dtEquipment;
         }
+
+        // ProductOrder
+
 
         //Authentication
 

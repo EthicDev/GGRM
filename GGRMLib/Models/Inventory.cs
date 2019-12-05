@@ -10,13 +10,15 @@ namespace GGRMLib.Models
     {
         public int ID { get; set; }
 
+        public string DisplayName { get; set; }
+
         public int InvQuantity { get; set; }
 
         public double InvSize { get; set; }
 
         public string InvMeasure { get; set; }
 
-        public double InvPrice { get; set; }
+        public decimal InvPrice { get; set; }
 
         public int ProductID { get; set; }
     }
