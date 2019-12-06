@@ -58,7 +58,7 @@ namespace GGRMLib.DataAccess
         }
 
         //CustomerOrderLine
-        public CustomerOrderLine CreateCustomerOrderLine(CustomerOrderLine col, out string status)
+        public OrderLine CreateCustomerOrderLine(OrderLine col, out string status)
         {
             status = "CustomerOrderLine insertion failed.";
             using (IDbConnection connection = new SqlConnection(GlobalConfig.ConString("GGRM")))
@@ -66,12 +66,11 @@ namespace GGRMLib.DataAccess
                 connection.Open();
                 SqlCommand cmd = new SqlCommand();
                 cmd.Connection = (SqlConnection)connection;
-                cmd.CommandText = "EXEC spCustomerOrderLine_Insert" +
+                cmd.CommandText = "EXEC spOrderLine_Insert" +
                     " @orlPrice = '" + col.ColPrice + "',"
                     + " @orlQuantity = '" + col.ColQuantity + "',"
                     + " @orlOrderReq = '" + col.ColOrderReq + "',"
                     + " @orlNote = '" + col.ColNote + "',"
-                    + " @serviceID = '" + col.ServiceID + "',"
                     + " @inventoryID = '" + col.InventoryID + "',"
                     + " @custOrdID = '" + col.OrderID + "'";
                 SqlDataReader records = cmd.ExecuteReader();

@@ -14,7 +14,7 @@ namespace GGRMLib.Models
             ID = -1;
             PaymentID = -1;
             OrdPaid = false;
-            orderLines = new BindingList<CustomerOrderLine>();
+            orderLines = new BindingList<OrderLine>();
             serviceOrders = new BindingList<ServiceOrder>();
         }
 
@@ -32,7 +32,7 @@ namespace GGRMLib.Models
 
         public int EmpID { get; set; }
 
-        public BindingList<CustomerOrderLine> orderLines { get; set; }
+        public BindingList<OrderLine> orderLines { get; set; }
         public BindingList<ServiceOrder> serviceOrders { get; set; }
     }
 }

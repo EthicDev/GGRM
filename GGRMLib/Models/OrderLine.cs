@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GGRMLib.Models
 {
-    public class CustomerOrderLine
+    public class OrderLine
     {
         public int ID { get; set; }
 
@@ -20,8 +20,8 @@ namespace GGRMLib.Models
 
         public int InventoryID { get; set; }
 
-        public int ServiceID { get; set; }
-
         public int OrderID { get; set; }
+
+        public int ProdOrderID { get; set; }
     }
 }
