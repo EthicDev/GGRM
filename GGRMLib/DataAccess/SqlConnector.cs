@@ -46,7 +46,7 @@ namespace GGRMLib.DataAccess
                     + " @ordPaid = '" + co.OrdPaid + "',"
                     + " @paymentID = '" + co.PaymentID + "',"
                     + " @custID = '" + co.CustID + "',"
-                    + " @empID = '" + co.EmpID + "'";
+                    + " @empID = " + co.EmpID;
                 SqlDataReader records = cmd.ExecuteReader();
                 if (records.Read())
                 {
@@ -57,26 +57,36 @@ namespace GGRMLib.DataAccess
             return co;
         }
 
-        //CustomerOrderLine
-        public OrderLine CreateCustomerOrderLine(OrderLine col, out string status)
+        //OrderLine
+        public OrderLine CreateOrderLine(OrderLine col, out string status)
         {
+            
             status = "CustomerOrderLine insertion failed.";
             using (IDbConnection connection = new SqlConnection(GlobalConfig.ConString("GGRM")))
             {
+                string prodOrdID;
+                if (col.ProdOrderID == null)
+                {
+                    prodOrdID = "NULL";
+                } else
+                {
+                    prodOrdID = col.ProdOrderID.ToString();
+                }
                 connection.Open();
                 SqlCommand cmd = new SqlCommand();
                 cmd.Connection = (SqlConnection)connection;
                 cmd.CommandText = "EXEC spOrderLine_Insert" +
-                    " @orlPrice = '" + col.ColPrice + "',"
-                    + " @orlQuantity = '" + col.ColQuantity + "',"
-                    + " @orlOrderReq = '" + col.ColOrderReq + "',"
+                    " @orlPrice = " + col.ColPrice.ToString() + ","
+                    + " @orlOrderQuantity = " + col.ColOrderQuantity.ToString() + ","
+                    + " @orlOrderReq = " + col.ColOrderReq.ToString() + ","
                     + " @orlNote = '" + col.ColNote + "',"
-                    + " @inventoryID = '" + col.InventoryID + "',"
-                    + " @custOrdID = '" + col.OrderID + "'";
+                    + " @inventoryID = " + col.InventoryID.ToString() + ","
+                    + " @custOrdID = " + col.OrderID.ToString() + ","
+                    + " @prodOrdID = " + prodOrdID;
                 SqlDataReader records = cmd.ExecuteReader();
                 if (records.Read())
                 {
-                    col.ID = records.GetInt32(0);
+                    col.ID = Convert.ToInt32(records[0]);
                 }
             }
             return col;
@@ -310,7 +320,7 @@ namespace GGRMLib.DataAccess
                 using (SqlConnection conn = new SqlConnection(GlobalConfig.ConString("GGRM")))
                 {
                     conn.Open();
-                    string sqlCommand = "SELECT inventory.id, prodName AS [Name], prodDescription AS [Description], prodBrand AS [Brand], CONVERT(varchar,prodSize) + ' ' + prodMeasure AS [Size], invPrice AS [Price] FROM inventory JOIN product ON inventory.productID = product.id WHERE prodName LIKE '%" + searchString + "%'";
+                    string sqlCommand = "SELECT inventory.id, inventory.invQuantity, prodName AS [Name], prodDescription AS [Description], prodBrand AS [Brand], CONVERT(varchar,prodSize) + ' ' + prodMeasure AS [Size], invPrice AS [Price] FROM inventory JOIN product ON inventory.productID = product.id WHERE prodName LIKE '%" + searchString + "%'";
                     SqlDataAdapter sqlDa = new SqlDataAdapter(sqlCommand, conn);
                     sqlDa.Fill(dtInventory);
                 }
@@ -505,6 +515,32 @@ namespace GGRMLib.DataAccess
         }
 
         // ProductOrder
+
+        public ProductOrder CreateProductOrder (ProductOrder po, out string status)
+        {
+            status = "ProductOrder insertion failed.";
+            using (IDbConnection connection = new SqlConnection(GlobalConfig.ConString("GGRM")))
+            {
+                connection.Open();
+                SqlCommand cmd = new SqlCommand();
+                cmd.Connection = (SqlConnection)connection;
+                cmd.CommandText = "EXEC spProductOrder_Insert" +
+                    " @pordDateOrdered = '" + po.PordDateOrdered + "',"
+                    + " @pordDateReceived = '" + po.PordDateReceived + "',"
+                    + " @pordNumber = " + po.PordNumber + ","
+                    + " @pordStatus = '" + po.PordStatus + "',"
+                    + " @pordPaid = " + po.PordPaid;
+                SqlDataReader records = cmd.ExecuteReader();
+                if (records.Read())
+                {
+                    //Not getting id from SQL properly
+                    //var test = records[0];
+                    //Console.WriteLine("@@DEBUG@@ Test value is equal to: "+test.ToString());
+                    po.ID = Convert.ToInt32(records[0]);
+                }
+            }
+            return po;
+        }
 
 
         //Authentication

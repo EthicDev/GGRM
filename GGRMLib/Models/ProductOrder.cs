@@ -7,11 +7,15 @@ using System.Threading.Tasks;
 
 namespace GGRMLib.Models
 {
-    class ProductOrder
+    public class ProductOrder
     {
         public ProductOrder()
         {
+            ID = -1;
             orderLines = new BindingList<OrderLine>();
+            PordStatus = "Not Ordered";
+            PordNumber = 0;
+            PordPaid = false;
         }
         public int ID { get; set; }
 

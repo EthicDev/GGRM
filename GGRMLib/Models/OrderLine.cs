@@ -8,11 +8,17 @@ namespace GGRMLib.Models
 {
     public class OrderLine
     {
+        public OrderLine()
+        {
+            ProdOrderID = null;
+        }
         public int ID { get; set; }
 
         public decimal ColPrice { get; set; }
 
-        public int ColQuantity { get; set; }
+        public int ColStockQuantity { get; set; }
+
+        public int ColOrderQuantity { get; set; }
 
         public bool ColOrderReq { get; set; }
 
@@ -22,6 +28,6 @@ namespace GGRMLib.Models
 
         public int OrderID { get; set; }
 
-        public int ProdOrderID { get; set; }
+        public int? ProdOrderID { get; set; }
     }
 }
