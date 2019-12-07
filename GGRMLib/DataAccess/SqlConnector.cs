@@ -57,6 +57,27 @@ namespace GGRMLib.DataAccess
             return co;
         }
 
+        public DataTable GetCustomerOrdersDataTable (out string status)
+        {
+            DataTable dtCustomerOrders = new DataTable();
+
+            status = "Getting CustomerOrders failed.";
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(GlobalConfig.ConString("GGRM")))
+                {
+                    conn.Open();
+                    string sqlCommand = "SELECT id, ordNumber, ordCreationDate, ordPaid, paymentID, custID, empID FROM customer_order";
+                    SqlDataAdapter sqlDa = new SqlDataAdapter(sqlCommand, conn);
+                    sqlDa.Fill(dtCustomerOrders);
+                }
+                status = "Getting CustomerOrders succeeded.";
+            }
+            catch (Exception ex) { status = ex.Message; }
+
+            return dtCustomerOrders;
+        }
+
         //OrderLine
         public OrderLine CreateOrderLine(OrderLine col, out string status)
         {
@@ -540,6 +561,30 @@ namespace GGRMLib.DataAccess
                 }
             }
             return po;
+        }
+
+        // Products
+
+        public DataTable GetProductsDataTable (out string status)
+        {
+            DataTable dtProducts = new DataTable();
+
+            status = "Getting products failed.";
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(GlobalConfig.ConString("GGRM")))
+                {
+                    conn.Open();
+                    string sqlCommand = "SELECT id, prodName, prodDescription, prodBrand, prodSize, prodMeasure FROM product";
+                    using SqlDataAdapter sqlDa = new SqlDataAdapter(sqlCommand, conn);
+                    sqlDa.Fill(dtProducts);
+
+                }
+                status = "Getting products succeeded.";
+            }
+            catch (Exception ex) { status = ex.Message; }
+
+            return dtProducts;
         }
 
 
