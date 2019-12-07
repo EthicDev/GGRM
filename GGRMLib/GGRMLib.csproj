@@ -60,11 +60,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataAccess\DataUtils.cs" />
-    <Compile Include="DataSet_Customers.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>DataSet_Customers.xsd</DependentUpon>
-    </Compile>
     <Compile Include="GlobalConfig.cs" />
     <Compile Include="DataAccess\IDataConnection.cs" />
     <Compile Include="Models\Customer.cs" />
@@ -90,17 +85,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="DataSet_Customers.xsc">
-      <DependentUpon>DataSet_Customers.xsd</DependentUpon>
-    </None>
-    <None Include="DataSet_Customers.xsd">
-      <Generator>MSDataSetGenerator</Generator>
-      <LastGenOutput>DataSet_Customers.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="DataSet_Customers.xss">
-      <DependentUpon>DataSet_Customers.xsd</DependentUpon>
-    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
