@@ -13,7 +13,7 @@ namespace GGRMLib.Models
         {
             ID = -1;
             orderLines = new BindingList<OrderLine>();
-            PordStatus = "Not Ordered";
+            PordStatus = "Requested";
             PordNumber = 0;
             PordPaid = false;
         }

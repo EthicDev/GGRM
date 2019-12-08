@@ -563,9 +563,53 @@ namespace GGRMLib.DataAccess
             return po;
         }
 
+        public DataTable GetProductOrderRequestsDataTable (out string status)
+        {
+            DataTable dtProductOrderRequests = new DataTable();
+
+            status = "Getting ProductOrders failed.";
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(GlobalConfig.ConString("GGRM")))
+                {
+                    conn.Open();
+                    string sqlCommand = "SELECT id, pordNumber, pordStatus FROM prod_order WHERE pordStatus = 'Requested'";
+                    using SqlDataAdapter sqlDa = new SqlDataAdapter(sqlCommand, conn);
+                    sqlDa.Fill(dtProductOrderRequests);
+
+                }
+                status = "Getting ProductOrders succeeded.";
+            }
+            catch (Exception ex) { status = ex.Message; }
+
+            return dtProductOrderRequests;
+        }
+
+        public DataTable GetPendingProductOrdersDataTable(out string status)
+        {
+            DataTable dtPendingProductOrders = new DataTable();
+
+            status = "Getting ProductOrders failed.";
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(GlobalConfig.ConString("GGRM")))
+                {
+                    conn.Open();
+                    string sqlCommand = "SELECT id, pordNumber, pordStatus FROM prod_order WHERE pordStatus = 'Ordered'";
+                    using SqlDataAdapter sqlDa = new SqlDataAdapter(sqlCommand, conn);
+                    sqlDa.Fill(dtPendingProductOrders);
+
+                }
+                status = "Getting ProductOrders succeeded.";
+            }
+            catch (Exception ex) { status = ex.Message; }
+
+            return dtPendingProductOrders;
+        }
+
         // Products
 
-        public DataTable GetProductsDataTable (out string status)
+        public DataTable GetProductsDataTable (out string status, string searchString = "")
         {
             DataTable dtProducts = new DataTable();
 
@@ -575,7 +619,7 @@ namespace GGRMLib.DataAccess
                 using (SqlConnection conn = new SqlConnection(GlobalConfig.ConString("GGRM")))
                 {
                     conn.Open();
-                    string sqlCommand = "SELECT id, prodName, prodDescription, prodBrand, prodSize, prodMeasure FROM product";
+                    string sqlCommand = "SELECT id, prodName, prodDescription, prodBrand, prodSize, prodMeasure, CONVERT(varchar, prodSize) + ' ' + prodMeasure AS [Size] FROM product WHERE prodName LIKE '%" + searchString + "%' OR prodDescription LIKE '%" + searchString + "%' OR prodBrand LIKE '%" + searchString + "%' OR prodSize LIKE '%" + searchString + "%' OR prodMeasure LIKE '%" + searchString + "%'";
                     using SqlDataAdapter sqlDa = new SqlDataAdapter(sqlCommand, conn);
                     sqlDa.Fill(dtProducts);
 
