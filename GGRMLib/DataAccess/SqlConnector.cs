@@ -297,7 +297,7 @@ namespace GGRMLib.DataAccess
                 using (SqlConnection conn = new SqlConnection(GlobalConfig.ConString("GGRM")))
                 {
                     conn.Open();
-                    string sqlCommand = "SELECT employee.id, empFirst, empLast, posName FROM employee JOIN position ON employee.posID = position.id WHERE empFirst LIKE '%" + searchString + "%' OR empLast LIKE '%" + searchString + "%'";
+                    string sqlCommand = "SELECT employee.id, empUser, empFirst, empLast, posName FROM employee JOIN position ON employee.posID = position.id WHERE empFirst LIKE '%" + searchString + "%' OR empLast LIKE '%" + searchString + "%'";
                     SqlDataAdapter sqlDa = new SqlDataAdapter(sqlCommand, conn);
                     sqlDa.Fill(dtEmployees);
                 }
@@ -479,7 +479,7 @@ namespace GGRMLib.DataAccess
                 using (SqlConnection conn = new SqlConnection(GlobalConfig.ConString("GGRM")))
                 {
                     conn.Open();
-                    string sqlCommand = "SELECT service_order.id, serordDateIn, serordIssue, serordWarranty, serordStatus, custOrdID, empID, serName, eqtType, equModel FROM service_order JOIN service ON service_order.serviceID = service.id JOIN equipment ON service_order.equipID = equipment.id JOIN equip_type ON equip_type.id = equipment.equtypeID WHERE serordStatus = 'Pending'";
+                    string sqlCommand = "SELECT service_order.id, serordDateIn AS [Intake Date], serordIssue AS [Issue], serordWarranty AS [Warranty?], serordStatus AS [Status], custFirst + ' ' + custLast AS [Customer], empFirst + ' ' + empLast AS [Requesting Employee], serName AS [Service Name], eqtType AS [Equip Type], equModel AS[Equip Model] FROM service_order JOIN service ON service_order.serviceID = service.id JOIN equipment ON service_order.equipID = equipment.id JOIN equip_type ON equip_type.id = equipment.equtypeID JOIN employee ON service_order.empID = employee.id JOIN customer ON service_order.custOrdID = customer.id WHERE serordStatus = 'Pending'";
                     using SqlDataAdapter sqlDa = new SqlDataAdapter(sqlCommand, conn);
                     sqlDa.Fill(dtPendingServices);
 
@@ -547,8 +547,8 @@ namespace GGRMLib.DataAccess
                 cmd.Connection = (SqlConnection)connection;
                 cmd.CommandText = "EXEC spProductOrder_Insert" +
                     " @pordDateOrdered = '" + po.PordDateOrdered + "',"
+                    + " @pordDateCreated = '" + po.PordDateCreated + "',"
                     + " @pordDateReceived = '" + po.PordDateReceived + "',"
-                    + " @pordNumber = " + po.PordNumber + ","
                     + " @pordStatus = '" + po.PordStatus + "',"
                     + " @pordPaid = " + po.PordPaid;
                 SqlDataReader records = cmd.ExecuteReader();
@@ -573,7 +573,7 @@ namespace GGRMLib.DataAccess
                 using (SqlConnection conn = new SqlConnection(GlobalConfig.ConString("GGRM")))
                 {
                     conn.Open();
-                    string sqlCommand = "SELECT id, pordNumber, pordStatus FROM prod_order WHERE pordStatus = 'Requested'";
+                    string sqlCommand = "SELECT id, pordNumber AS [Order Number], pordDateCreated AS [Date Created], pordStatus AS [Status] FROM prod_order WHERE pordStatus = 'Requested'";
                     using SqlDataAdapter sqlDa = new SqlDataAdapter(sqlCommand, conn);
                     sqlDa.Fill(dtProductOrderRequests);
 

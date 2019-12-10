@@ -13,6 +13,10 @@ namespace GGRMLib.Models
         {
             ID = -1;
             orderLines = new BindingList<OrderLine>();
+
+            PordDateCreated = DateTime.UtcNow;
+            PordDateOrdered = null;
+            PordDateReceived = null;
             PordStatus = "Requested";
             PordNumber = 0;
             PordPaid = false;
@@ -23,9 +27,11 @@ namespace GGRMLib.Models
 
         public string PordStatus { get; set; }
 
-        public DateTime PordDateOrdered { get; set; }
+        public DateTime PordDateCreated { get; set; }
 
-        public DateTime PordDateReceived { get; set; }
+        public DateTime? PordDateOrdered { get; set; }
+
+        public DateTime? PordDateReceived { get; set; }
 
         public bool PordPaid { get; set; }
 

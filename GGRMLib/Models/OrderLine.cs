@@ -14,6 +14,12 @@ namespace GGRMLib.Models
         }
         public int ID { get; set; }
 
+        public string ColItemName { get; set; }
+
+        public string ColItemBrand { get; set; }
+
+        public string ColItemDesc { get; set; }
+
         public decimal ColPrice { get; set; }
 
         public int ColStockQuantity { get; set; }
@@ -29,5 +35,7 @@ namespace GGRMLib.Models
         public int OrderID { get; set; }
 
         public int? ProdOrderID { get; set; }
+
+
     }
 }
