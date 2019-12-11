@@ -44,6 +44,7 @@ namespace GGRMLib.DataAccess
                     " @ordNumber = '" + co.OrdNumber + "',"
                     + " @ordCreationDate = '" + co.OrdCreationDate + "',"
                     + " @ordTotal = '" + co.OrdTotal + "',"
+                    + " @ordPartyPlan = '" + co.OrdPartyPlan + "',"
                     + " @ordPaid = '" + co.OrdPaid + "',"
                     + " @paymentID = '" + co.PaymentID + "',"
                     + " @custID = '" + co.CustID + "',"
@@ -68,7 +69,7 @@ namespace GGRMLib.DataAccess
                 using (SqlConnection conn = new SqlConnection(GlobalConfig.ConString("GGRM")))
                 {
                     conn.Open();
-                    string sqlCommand = "SELECT id, ordNumber, ordCreationDate, ordTotal, ordPaid, paymentID, custID, empID FROM customer_order";
+                    string sqlCommand = "SELECT id, ordNumber, ordCreationDate, ordTotal, ordPartyPlan, ordPaid, paymentID, custID, empID FROM customer_order";
                     SqlDataAdapter sqlDa = new SqlDataAdapter(sqlCommand, conn);
                     sqlDa.Fill(dtCustomerOrders);
                 }
@@ -86,13 +87,29 @@ namespace GGRMLib.DataAccess
             status = "CustomerOrderLine insertion failed.";
             using (IDbConnection connection = new SqlConnection(GlobalConfig.ConString("GGRM")))
             {
-                string prodOrdID;
+                string prodOrdID, custOrdID, serOrdID;
                 if (col.ProdOrderID == null)
                 {
                     prodOrdID = "NULL";
                 } else
                 {
                     prodOrdID = col.ProdOrderID.ToString();
+                }
+                if (col.OrderID == null)
+                {
+                    custOrdID = "NULL";
+                }
+                else
+                {
+                    custOrdID = col.OrderID.ToString();
+                }
+                if (col.ServiceOrderID == null)
+                {
+                    serOrdID = "NULL";
+                }
+                else
+                {
+                    serOrdID = col.ServiceOrderID.ToString();
                 }
                 connection.Open();
                 SqlCommand cmd = new SqlCommand();
@@ -103,8 +120,9 @@ namespace GGRMLib.DataAccess
                     + " @orlOrderReq = " + col.ColOrderReq.ToString() + ","
                     + " @orlNote = '" + col.ColNote + "',"
                     + " @inventoryID = " + col.InventoryID.ToString() + ","
-                    + " @custOrdID = " + col.OrderID.ToString() + ","
-                    + " @prodOrdID = " + prodOrdID;
+                    + " @custOrdID = " + custOrdID + ","
+                    + " @prodOrdID = " + prodOrdID + ","
+                    + " @serOrdID = " + serOrdID;
                 SqlDataReader records = cmd.ExecuteReader();
                 if (records.Read())
                 {
@@ -309,6 +327,38 @@ namespace GGRMLib.DataAccess
             return dtEmployees;
         }
 
+        public DataTable GetEmployeeByID (int id, out string status)
+        {
+            Employee emp = new Employee();
+            status = "Getting employee failed.";
+            try
+            {
+                using (IDbConnection connection = new SqlConnection(GlobalConfig.ConString("GGRM")))
+                {
+                    connection.Open();
+                    SqlCommand cmd = new SqlCommand();
+                    cmd.Connection = (SqlConnection)connection;
+                    cmd.CommandText = "SELECT employee.id, empFirst, empLast, posID, posName, empUser, empPassword FROM employee JOIN position on employee.posID = position.id WHERE employee.id = " + id.ToString();
+                    SqlDataReader records = cmd.ExecuteReader();
+                    if (records.Read())
+                    {
+                        emp.ID = (int)records[0];
+                        emp.EmpFirst = (string)records[1];
+                        emp.EmpLast = (string)records[2];
+                        emp.PosID = (int)records[3];
+                        emp.PosName = (string)records[4];
+                        emp.EmpUser = (string)records[5];
+                        emp.EmpPassword = (string)records[6];
+
+                    }
+                }
+                status = "Getting employee succeeded.";
+            }
+            catch (Exception ex) { status = ex.Message; }
+
+            return emp;
+        }
+
         // Inventory
 
         public DataTable GetInventoryDataTable(out string status, string searchString = "")
@@ -353,37 +403,34 @@ namespace GGRMLib.DataAccess
             return dtInventory;
         }
 
-        //public Inventory GetInventoryByID(int id, out string status)
-        //{
-        //    Inventory cust = new Inventory();
-        //    status = "Getting inventory failed.";
-        //    try
-        //    {
-        //        using (IDbConnection connection = new SqlConnection(GlobalConfig.ConString("GGRM")))
-        //        {
-        //            connection.Open();
-        //            SqlCommand cmd = new SqlCommand();
-        //            cmd.Connection = (SqlConnection)connection;
-        //            cmd.CommandText = "SELECT id, invQuantity, WHERE id = " + id.ToString();
-        //            SqlDataReader records = cmd.ExecuteReader();
-        //            if (records.Read())
-        //            {
-        //                cust = new Customer(records.GetString(1),
-        //                    records.GetString(2),
-        //                    records.GetString(3),
-        //                    records.GetString(4),
-        //                    records.GetString(5),
-        //                    records.GetString(6),
-        //                    records.GetString(7));
-        //                cust.ID = records.GetInt32(0);
-        //            }
-        //        }
-        //        status = "Getting customer succeeded.";
-        //    }
-        //    catch (Exception ex) { status = ex.Message; }
+        public Inventory GetInventoryByID(int id, out string status)
+        {
+            Inventory inv = new Inventory();
+            status = "Getting inventory failed.";
+            try
+            {
+                using (IDbConnection connection = new SqlConnection(GlobalConfig.ConString("GGRM")))
+                {
+                    connection.Open();
+                    SqlCommand cmd = new SqlCommand();
+                    cmd.Connection = (SqlConnection)connection;
+                    cmd.CommandText = "SELECT inventory.id, invQuantity, invPrice, productID, prodName, prodDescription, prodBrand FROM inventory JOIN product ON inventory.productID = product.id WHERE inventory.id = " + id.ToString();
+                    SqlDataReader records = cmd.ExecuteReader();
+                    if (records.Read())
+                    {
+                        inv.ID = (int)records[0];
+                        inv.InvQuantity = (int)records[1];
+                        inv.InvPrice = (decimal)records[2];
+                        inv.ProductID = (int)records[3];
+                        inv.DisplayName = records[4].ToString() + "\n" + records[5].ToString() + "\n" + records[6].ToString() + "\n";
+                    }
+                }
+                status = "Getting inventory succeeded.";
+            }
+            catch (Exception ex) { status = ex.Message; }
 
-        //    return cust;
-        //}
+            return inv;
+        }
 
         //public List<Inventory> GetInventoryList(out string status, string searchString = "")
         //{
@@ -490,6 +537,40 @@ namespace GGRMLib.DataAccess
             catch (Exception ex) { status = ex.Message; }
 
             return dtPendingServices;
+        }
+
+        public ServiceOrder GetServiceOrderByID(int id, out string status)
+        {
+            ServiceOrder sord = new ServiceOrder();
+            status = "Getting ServiceOrder failed.";
+            try
+            {
+                using (IDbConnection connection = new SqlConnection(GlobalConfig.ConString("GGRM")))
+                {
+                    connection.Open();
+                    SqlCommand cmd = new SqlCommand();
+                    cmd.Connection = (SqlConnection)connection;
+                    cmd.CommandText = "SELECT id, serordDateIn, serordDateOut, serordIssue, serordWarranty, serordStatus, custOrdID, serviceID, equipID, empID FROM service_order WHERE id = " + id.ToString();
+                    SqlDataReader records = cmd.ExecuteReader();
+                    if (records.Read())
+                    {
+                        sord.ID = (int)records[0];
+                        sord.SerOrdDateIn = (DateTime)records[1];
+                        sord.SerOrdDateOut = (DateTime)records[2];
+                        sord.SerOrdIssue = (string)records[3];
+                        sord.SerOrdWarranty = (bool)records[4];
+                        sord.SerOrdStatus = (string)records[5];
+                        sord.CustOrdID = (int)records[6];
+                        sord.ServiceID = (int)records[7];
+                        sord.EquipID = (int)records[8];
+                        sord.EmpID = (int)records[9];
+                    }
+                }
+                status = "Getting ServiceOrder succeeded.";
+            }
+            catch (Exception ex) { status = ex.Message; }
+
+            return sord;
         }
 
         public DataTable GetServiceTypesDataTable (out string status)
@@ -620,7 +701,7 @@ namespace GGRMLib.DataAccess
                 using (SqlConnection conn = new SqlConnection(GlobalConfig.ConString("GGRM")))
                 {
                     conn.Open();
-                    string sqlCommand = "SELECT id, prodName, prodDescription, prodBrand, prodSize, prodMeasure, CONVERT(varchar, prodSize) + ' ' + prodMeasure AS [Size] FROM product WHERE prodName LIKE '%" + searchString + "%' OR prodDescription LIKE '%" + searchString + "%' OR prodBrand LIKE '%" + searchString + "%' OR prodSize LIKE '%" + searchString + "%' OR prodMeasure LIKE '%" + searchString + "%'";
+                    string sqlCommand = "SELECT id, prodName, prodDescription, prodBrand, prodSize, prodMeasure, prodPrice, CONVERT(varchar, prodSize) + ' ' + prodMeasure AS [Size] FROM product WHERE prodName LIKE '%" + searchString + "%' OR prodDescription LIKE '%" + searchString + "%' OR prodBrand LIKE '%" + searchString + "%' OR prodSize LIKE '%" + searchString + "%' OR prodMeasure LIKE '%" + searchString + "%'";
                     using SqlDataAdapter sqlDa = new SqlDataAdapter(sqlCommand, conn);
                     sqlDa.Fill(dtProducts);
 

@@ -11,6 +11,8 @@ namespace GGRMLib.Models
         public OrderLine()
         {
             ProdOrderID = null;
+            OrderID = null;
+            ServiceOrderID = null;
         }
         public int ID { get; set; }
 
@@ -32,9 +34,11 @@ namespace GGRMLib.Models
 
         public int InventoryID { get; set; }
 
-        public int OrderID { get; set; }
+        public int? OrderID { get; set; }
 
         public int? ProdOrderID { get; set; }
+
+        public int? ServiceOrderID { get; set; }
 
 
     }
