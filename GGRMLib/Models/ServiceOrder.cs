@@ -15,6 +15,8 @@ namespace GGRMLib.Models
 
         public int ID { get; set; }
 
+        public string ServiceName { get; set; }
+
         public DateTime SerOrdDateIn { get; set; }
 
         public DateTime SerOrdDateOut { get; set; }
