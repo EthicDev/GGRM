@@ -327,7 +327,7 @@ namespace GGRMLib.DataAccess
             return dtEmployees;
         }
 
-        public DataTable GetEmployeeByID (int id, out string status)
+        public Employee GetEmployeeByID (int id, out string status)
         {
             Employee emp = new Employee();
             status = "Getting employee failed.";
@@ -356,6 +356,31 @@ namespace GGRMLib.DataAccess
             }
             catch (Exception ex) { status = ex.Message; }
 
+            return emp;
+        }
+
+        public Employee EditEmployee (Employee emp, out string status)
+        {
+            status = "Employee update failed.";
+            try
+            {
+                using (IDbConnection connection = new SqlConnection(GlobalConfig.ConString("GGRM")))
+                {
+                    connection.Open();
+                    SqlCommand cmd = new SqlCommand();
+                    cmd.Connection = (SqlConnection)connection;
+                    cmd.CommandText = "UPDATE employee SET" +
+                        " empFirst = '" + emp.EmpFirst + "',"
+                        + " empLast = '" + emp.EmpLast + "',"
+                        + " posID = '" + emp.PosID + "',"
+                        + " empUser = '" + emp.EmpUser + "',"
+                        + " empPassword = '" + emp.EmpPassword + "',"
+                        + " WHERE id = " + emp.ID;
+                    cmd.ExecuteNonQuery();
+                }
+                status = "Employee update succeeded.";
+            }
+            catch (Exception ex) { status = ex.Message; }
             return emp;
         }
 
