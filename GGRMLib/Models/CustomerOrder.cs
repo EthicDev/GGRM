@@ -14,6 +14,7 @@ namespace GGRMLib.Models
             ID = -1;
             PaymentID = -1;
             OrdPaid = false;
+            OrdTotal = 0.00m;
             orderLines = new BindingList<OrderLine>();
             serviceOrders = new BindingList<ServiceOrder>();
         }
@@ -23,6 +24,8 @@ namespace GGRMLib.Models
         public int OrdNumber { get; set; }
 
         public DateTime OrdCreationDate { get; set; }
+
+        public decimal OrdTotal { get; set; }
 
         public bool OrdPaid { get; set; }
 

@@ -43,6 +43,7 @@ namespace GGRMLib.DataAccess
                 cmd.CommandText = "EXEC spCustomerOrder_Insert" +
                     " @ordNumber = '" + co.OrdNumber + "',"
                     + " @ordCreationDate = '" + co.OrdCreationDate + "',"
+                    + " @ordTotal = '" + co.OrdTotal + "',"
                     + " @ordPaid = '" + co.OrdPaid + "',"
                     + " @paymentID = '" + co.PaymentID + "',"
                     + " @custID = '" + co.CustID + "',"
@@ -67,7 +68,7 @@ namespace GGRMLib.DataAccess
                 using (SqlConnection conn = new SqlConnection(GlobalConfig.ConString("GGRM")))
                 {
                     conn.Open();
-                    string sqlCommand = "SELECT id, ordNumber, ordCreationDate, ordPaid, paymentID, custID, empID FROM customer_order";
+                    string sqlCommand = "SELECT id, ordNumber, ordCreationDate, ordTotal, ordPaid, paymentID, custID, empID FROM customer_order";
                     SqlDataAdapter sqlDa = new SqlDataAdapter(sqlCommand, conn);
                     sqlDa.Fill(dtCustomerOrders);
                 }
@@ -479,7 +480,7 @@ namespace GGRMLib.DataAccess
                 using (SqlConnection conn = new SqlConnection(GlobalConfig.ConString("GGRM")))
                 {
                     conn.Open();
-                    string sqlCommand = "SELECT service_order.id, serordDateIn AS [Intake Date], serordIssue AS [Issue], serordWarranty AS [Warranty?], serordStatus AS [Status], custFirst + ' ' + custLast AS [Customer], empFirst + ' ' + empLast AS [Requesting Employee], serName AS [Service Name], eqtType AS [Equip Type], equModel AS[Equip Model] FROM service_order JOIN service ON service_order.serviceID = service.id JOIN equipment ON service_order.equipID = equipment.id JOIN equip_type ON equip_type.id = equipment.equtypeID JOIN employee ON service_order.empID = employee.id JOIN customer ON service_order.custOrdID = customer.id WHERE serordStatus = 'Pending'";
+                    string sqlCommand = "SELECT service_order.id, serordDateIn AS [Intake Date], serordIssue AS [Issue], serordWarranty AS [Warranty?], serordStatus AS [Status], custFirst + ' ' + custLast AS [Customer], empFirst + ' ' + empLast AS [Requesting Employee], serName AS [Service Name], eqtType AS [Equip Type], equModel AS [Equip Model] FROM service_order JOIN service ON service_order.serviceID = service.id JOIN equipment ON service_order.equipID = equipment.id JOIN equip_type ON equip_type.id = equipment.equtypeID JOIN employee ON service_order.empID = employee.id JOIN customer_order ON service_order.custOrdID = customer_order.id JOIN customer ON customer_order.custID = customer.id WHERE serordStatus = 'Pending'";
                     using SqlDataAdapter sqlDa = new SqlDataAdapter(sqlCommand, conn);
                     sqlDa.Fill(dtPendingServices);
 
