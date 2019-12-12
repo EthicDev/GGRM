@@ -384,6 +384,29 @@ namespace GGRMLib.DataAccess
             return emp;
         }
 
+        //Position
+
+        public DataTable GetPositionDataTable (out string status, string searchString = "")
+        {
+            DataTable dtPosition = new DataTable();
+
+            status = "Getting positions failed.";
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(GlobalConfig.ConString("GGRM")))
+                {
+                    conn.Open();
+                    string sqlCommand = "SELECT id, posName FROM position WHERE posName LIKE '%" + searchString + "%'";
+                    SqlDataAdapter sqlDa = new SqlDataAdapter(sqlCommand, conn);
+                    sqlDa.Fill(dtPosition);
+                }
+                status = "Getting positions succeeded.";
+            }
+            catch (Exception ex) { status = ex.Message; }
+
+            return dtPosition;
+        }
+
         // Inventory
 
         public DataTable GetInventoryDataTable(out string status, string searchString = "")
