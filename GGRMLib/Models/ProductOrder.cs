@@ -18,12 +18,12 @@ namespace GGRMLib.Models
             PordDateOrdered = null;
             PordDateReceived = null;
             PordStatus = "Requested";
-            PordNumber = 0;
+            PordNumber = "0";
             PordPaid = false;
         }
         public int ID { get; set; }
 
-        public int PordNumber { get; set; }
+        public string PordNumber { get; set; }
 
         public string PordStatus { get; set; }
 
