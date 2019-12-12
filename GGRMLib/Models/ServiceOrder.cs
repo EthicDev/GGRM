@@ -35,7 +35,9 @@ namespace GGRMLib.Models
 
         public int EquipID { get; set; }
 
-        public int EmpID { get; set; }
+        public int RequestingEmpID { get; set; }
+
+        public int TechinicianID { get; set; }
 
         public BindingList<OrderLine> serviceParts { get; set; }
     }

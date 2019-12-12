@@ -35,6 +35,10 @@ namespace GGRMLib.Models
 
         public bool PordPaid { get; set; }
 
+        public int RequestingEmpID { get; set; }
+
+        public int OrderingEmpID { get; set; }
+
         public BindingList<OrderLine> orderLines { get; set; }
     }
 }

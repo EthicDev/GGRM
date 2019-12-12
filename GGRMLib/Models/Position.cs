@@ -11,5 +11,6 @@ namespace GGRMLib.Models
         public int ID { get; set; }
 
         public string PosName { get; set; }
+
     }
 }

@@ -374,7 +374,7 @@ namespace GGRMLib.DataAccess
                         + " empLast = '" + emp.EmpLast + "',"
                         + " posID = '" + emp.PosID + "',"
                         + " empUser = '" + emp.EmpUser + "',"
-                        + " empPassword = '" + emp.EmpPassword + "',"
+                        + " empPassword = '" + emp.EmpPassword + "'"
                         + " WHERE id = " + emp.ID;
                     cmd.ExecuteNonQuery();
                 }
@@ -554,7 +554,7 @@ namespace GGRMLib.DataAccess
                     + " @serordStatus = '" + so.SerOrdStatus + "',"
                     + " @serviceID = '" + so.ServiceID + "',"
                     + " @equipID = '" + so.EquipID + "',"
-                    + " @empID = '" + so.EmpID + "',"
+                    + " @requestingEmpID = '" + so.RequestingEmpID + "',"
                     + " @custOrdID = '" + so.CustOrdID + "'";
                 SqlDataReader records = cmd.ExecuteReader();
                 if (records.Read())
@@ -575,7 +575,7 @@ namespace GGRMLib.DataAccess
                 using (SqlConnection conn = new SqlConnection(GlobalConfig.ConString("GGRM")))
                 {
                     conn.Open();
-                    string sqlCommand = "SELECT service_order.id, serordDateIn AS [Intake Date], serordIssue AS [Issue], serordWarranty AS [Warranty?], serordStatus AS [Status], custFirst + ' ' + custLast AS [Customer], empFirst + ' ' + empLast AS [Requesting Employee], serName AS [Service Name], eqtType AS [Equip Type], equModel AS [Equip Model] FROM service_order JOIN service ON service_order.serviceID = service.id JOIN equipment ON service_order.equipID = equipment.id JOIN equip_type ON equip_type.id = equipment.equtypeID JOIN employee ON service_order.empID = employee.id JOIN customer_order ON service_order.custOrdID = customer_order.id JOIN customer ON customer_order.custID = customer.id WHERE serordStatus = 'Pending'";
+                    string sqlCommand = "SELECT service_order.id, serordDateIn AS [Intake Date], serordIssue AS [Issue], serordWarranty AS [Warranty?], serordStatus AS [Status], custFirst + ' ' + custLast AS [Customer], empFirst + ' ' + empLast AS [Requesting Employee], serName AS [Service Name], eqtType AS [Equip Type], equModel AS [Equip Model] FROM service_order JOIN [dbo].[service] ON service_order.serviceID = [dbo].[service].[id] JOIN equipment ON service_order.equipID = equipment.id JOIN equip_type ON equip_type.id = equipment.equtypeID JOIN employee ON service_order.requestingEmpID = employee.id JOIN customer_order ON service_order.custOrdID = customer_order.id JOIN customer ON customer_order.custID = customer.id WHERE serordStatus = 'Pending'";
                     using SqlDataAdapter sqlDa = new SqlDataAdapter(sqlCommand, conn);
                     sqlDa.Fill(dtPendingServices);
 
@@ -611,7 +611,7 @@ namespace GGRMLib.DataAccess
                         sord.CustOrdID = (int)records[6];
                         sord.ServiceID = (int)records[7];
                         sord.EquipID = (int)records[8];
-                        sord.EmpID = (int)records[9];
+                        sord.RequestingEmpID = (int)records[9];
                     }
                 }
                 status = "Getting ServiceOrder succeeded.";
@@ -680,7 +680,8 @@ namespace GGRMLib.DataAccess
                     + " @pordDateCreated = '" + po.PordDateCreated + "',"
                     + " @pordDateReceived = '" + po.PordDateReceived + "',"
                     + " @pordStatus = '" + po.PordStatus + "',"
-                    + " @pordPaid = " + po.PordPaid;
+                    + " @pordPaid = " + po.PordPaid + ","
+                    + " @requestingEmpID = " + po.RequestingEmpID;
                 SqlDataReader records = cmd.ExecuteReader();
                 if (records.Read())
                 {

@@ -17,6 +17,7 @@ namespace GGRMLib.Models
         public int PosID { get; set; }
 
         public string PosName { get; set; }
+
         public string EmpUser { get; set; }
 
         public string EmpPassword { internal get; set; }
