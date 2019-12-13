@@ -25,6 +25,8 @@ namespace GGRMLib.Models
 
         public string PordNumber { get; set; }
 
+        public string PordSupplierOrderNum { get; set; }
+
         public string PordStatus { get; set; }
 
         public DateTime PordDateCreated { get; set; }
@@ -34,6 +36,8 @@ namespace GGRMLib.Models
         public DateTime? PordDateReceived { get; set; }
 
         public bool PordPaid { get; set; }
+
+        public string PordRequestSource { get; set; }
 
         public int RequestingEmpID { get; set; }
 

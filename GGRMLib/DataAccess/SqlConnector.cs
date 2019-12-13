@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
@@ -80,6 +81,8 @@ namespace GGRMLib.DataAccess
             return dtCustomerOrders;
         }
 
+
+
         //OrderLine
         public OrderLine CreateOrderLine(OrderLine col, out string status)
         {
@@ -130,6 +133,53 @@ namespace GGRMLib.DataAccess
                 }
             }
             return col;
+        }
+
+        public DataTable GetOrderLinesByProdOrdIDs (int[] ids, out string status)
+        {
+            DataTable dtOrderLines = new DataTable();
+            status = "Getting Order Lines failed.";
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(GlobalConfig.ConString("GGRM")))
+                {
+                    conn.Open();
+                    string idSelector = "";
+                    for (int i = 0; i < ids.Length; i++)
+                    {
+                        idSelector += ids[i].ToString();
+                        if (i != ids.Length - 1) idSelector += " OR order_line.prodOrdID = ";
+                    }
+                    string sqlCommand = "SELECT order_line.id, pordNumber, prodName, prodDescription, prodBrand, CONVERT(varchar,prodSize) + ' ' + prodMeasure AS [Size], orlPrice, invQuantity, orlOrderQuantity, orlNote, pordRequestSource, empFirst + ' ' + empLast AS [Requesting Employee], inventoryID, custOrdID, prodOrdID, serOrdID, orlSupplierQuantityOrdered FROM order_line JOIN inventory ON order_line.inventoryID = inventory.id JOIN product ON inventory.productID = product.id JOIN prod_order ON order_line.prodOrdID = prod_order.id JOIN employee ON employee.ID = prod_order.requestingEmpID WHERE order_line.prodOrdID = " + idSelector;
+                    SqlDataAdapter sqlDa = new SqlDataAdapter(sqlCommand, conn);
+                    sqlDa.Fill(dtOrderLines);
+                }
+                status = "Getting Order Lines succeeded.";
+            }
+            catch (Exception ex) { status = ex.Message; }
+
+            return dtOrderLines;
+        }
+
+        public int EditOrderLineSupplierQuantity (int id, int quantity, out string status)
+        {
+            status = "Order Line update failed.";
+            try
+            {
+                using (IDbConnection connection = new SqlConnection(GlobalConfig.ConString("GGRM")))
+                {
+                    connection.Open();
+                    SqlCommand cmd = new SqlCommand();
+                    cmd.Connection = (SqlConnection)connection;
+                    cmd.CommandText = "UPDATE order_line SET" +
+                        " orlSupplierQuantityOrdered = " + quantity.ToString()
+                        + " WHERE id = " + id.ToString();
+                    cmd.ExecuteNonQuery();
+                }
+                status = "Order Line update succeeded.";
+            }
+            catch (Exception ex) { status = ex.Message; }
+            return id;
         }
 
         //Customer
@@ -726,7 +776,7 @@ namespace GGRMLib.DataAccess
                 using (SqlConnection conn = new SqlConnection(GlobalConfig.ConString("GGRM")))
                 {
                     conn.Open();
-                    string sqlCommand = "SELECT prod_order.id, pordNumber, empFirst + ' ' + empLast AS [Ordering Employee], pordStatus AS [Status] FROM prod_order JOIN employee ON prod_order.orderingEmpID = employee.id WHERE pordStatus = 'Ordered'";
+                    string sqlCommand = "SELECT prod_order.id, pordNumber AS [PO #], pordSupplierOrdNum AS [Supplier Order #], empFirst + ' ' + empLast AS [Ordering Employee], pordStatus AS [Status] FROM prod_order JOIN employee ON prod_order.orderingEmpID = employee.id WHERE pordStatus = 'Ordered'";
                     using SqlDataAdapter sqlDa = new SqlDataAdapter(sqlCommand, conn);
                     sqlDa.Fill(dtPendingProductOrders);
 
@@ -749,7 +799,7 @@ namespace GGRMLib.DataAccess
                     connection.Open();
                     SqlCommand cmd = new SqlCommand();
                     cmd.Connection = (SqlConnection)connection;
-                    cmd.CommandText = "SELECT id, pordNumber, pordStatus, pordDateCreated, pordDateOrdered, pordDateReceived, pordPaid, requestingEmpID, orderingEmpID WHERE id = " + id.ToString();
+                    cmd.CommandText = "SELECT id, pordNumber, pordStatus, pordDateCreated, pordDateOrdered, pordDateReceived, pordPaid, requestingEmpID, orderingEmpID FROM prod_order WHERE id = " + id.ToString();
                     SqlDataReader records = cmd.ExecuteReader();
                     if (records.Read())
                     {
@@ -769,6 +819,29 @@ namespace GGRMLib.DataAccess
             catch (Exception ex) { status = ex.Message; }
 
             return pord;
+        }
+
+        public ProductOrder EditProductOrder(ProductOrder po, out string status)
+        {
+            status = "Product Order update failed.";
+            try
+            {
+                using (IDbConnection connection = new SqlConnection(GlobalConfig.ConString("GGRM")))
+                {
+                    connection.Open();
+                    SqlCommand cmd = new SqlCommand();
+                    cmd.Connection = (SqlConnection)connection;
+                    cmd.CommandText = "UPDATE prod_order SET" +
+                        " pordSupplierOrdNum = '" + po.PordSupplierOrderNum + "',"
+                        + " pordStatus = '" + po.PordStatus + "',"
+                        + " pordDateOrdered = '" + po.PordDateOrdered.ToString() + "'"
+                        + " WHERE id = " + po.ID;
+                    cmd.ExecuteNonQuery();
+                }
+                status = "Product Order update succeeded.";
+            }
+            catch (Exception ex) { status = ex.Message; }
+            return po;
         }
 
         // Products
