@@ -293,7 +293,8 @@ namespace GGRMLib.DataAccess
                         + " @empLast = '" + emp.EmpLast + "',"
                         + " @posID = " + emp.PosID + ","
                         + " @empUser = '" + emp.EmpUser + "',"
-                        + " @empPassword = '" + emp.EmpPassword + "'";
+                        + " @empPassword = '" + emp.EmpPassword + "'"
+                        + " @empDisabled = '" + emp.EmpDisabled;
                     SqlDataReader records = cmd.ExecuteReader();
                     if (records.Read())
                     {
@@ -374,13 +375,48 @@ namespace GGRMLib.DataAccess
                         + " empLast = '" + emp.EmpLast + "',"
                         + " posID = '" + emp.PosID + "',"
                         + " empUser = '" + emp.EmpUser + "',"
-                        + " empPassword = '" + emp.EmpPassword + "'"
+                        + " empPassword = '" + emp.EmpPassword + "',"
+                        + " empDisabled = '" + emp.EmpDisabled + "',"
                         + " WHERE id = " + emp.ID;
                     cmd.ExecuteNonQuery();
                 }
                 status = "Employee update succeeded.";
             }
             catch (Exception ex) { status = ex.Message; }
+            return emp;
+        }
+
+        public Employee ToggleEmployeeDisabled (Employee emp, out string status)
+        {
+            status = "Employee update failed.";
+            try
+            {
+                using (IDbConnection connection = new SqlConnection(GlobalConfig.ConString("GGRM")))
+                {
+                    if(emp.EmpDisabled == 1)
+                    {
+                        connection.Open();
+                        SqlCommand cmd = new SqlCommand();
+                        cmd.Connection = (SqlConnection)connection;
+                        cmd.CommandText = "UPDATE employee SET empDisabled = 0 WHERE id = " + emp.ID;
+                        cmd.ExecuteNonQuery();
+                        status = "Employee enabled.";
+                    } else
+                    {
+                        connection.Open();
+                        SqlCommand cmd = new SqlCommand();
+                        cmd.Connection = (SqlConnection)connection;
+                        cmd.CommandText = "UPDATE employee SET empDisabled = 1 WHERE id = " + emp.ID;
+                        cmd.ExecuteNonQuery();
+                        status = "Employee disabled.";
+                    }
+                    
+                }
+                
+            } catch (Exception ex)
+            {
+                status = ex.Message;
+            }
             return emp;
         }
 
@@ -396,7 +432,7 @@ namespace GGRMLib.DataAccess
                 using (SqlConnection conn = new SqlConnection(GlobalConfig.ConString("GGRM")))
                 {
                     conn.Open();
-                    string sqlCommand = "SELECT id, posName FROM position WHERE posName LIKE '%" + searchString + "%'";
+                    string sqlCommand = "SELECT id, posName FROM position WHERE posName LIKE '%" + searchString + "%' AND id <= 5";
                     SqlDataAdapter sqlDa = new SqlDataAdapter(sqlCommand, conn);
                     sqlDa.Fill(dtPosition);
                 }

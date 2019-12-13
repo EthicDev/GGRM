@@ -21,5 +21,7 @@ namespace GGRMLib.Models
         public string EmpUser { get; set; }
 
         public string EmpPassword { internal get; set; }
+
+        public int EmpDisabled { get; set; }
     }
 }
