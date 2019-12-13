@@ -22,6 +22,10 @@ namespace GGRMLib.Models
 
         public string ColItemDesc { get; set; }
 
+        public decimal ColItemSize { get; set; }
+
+        public string ColItemMeasure { get; set; }
+
         public decimal ColPrice { get; set; }
 
         public int ColStockQuantity { get; set; }
