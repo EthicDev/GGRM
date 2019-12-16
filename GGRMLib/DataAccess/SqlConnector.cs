@@ -84,6 +84,37 @@ namespace GGRMLib.DataAccess
             return dtCustomerOrders;
         }
 
+        public CustomerOrder GetCustomerOrderByID(int id, out string status)
+        {
+            CustomerOrder co = new CustomerOrder();
+            status = "Getting order failed.";
+            try
+            {
+                using (IDbConnection connection = new SqlConnection(GlobalConfig.ConString("GGRM")))
+                {
+                    connection.Open();
+                    SqlCommand cmd = new SqlCommand();
+                    cmd.Connection = (SqlConnection)connection;
+                    cmd.CommandText = "SELECT * FROM customer_order WHERE id = " + id.ToString();
+                    SqlDataReader records = cmd.ExecuteReader();
+                    if (records.Read())
+                    {
+                        co.OrdNumber = (int)records[1];
+                        co.OrdCreationDate = (DateTime)records[2];
+                        co.OrdTotal = (decimal)records[3];
+                        co.OrdPartyPlan = (decimal)records[4];
+                        co.OrdPaid = (bool)records[5];
+                        co.PaymentID = (int)records[6];
+                        co.CustID = (int)records[7];
+                        co.EmpID = (int)records[8];
+                    }
+                }
+                status = "Getting order succeeded.";
+            }
+            catch (Exception ex) { status = ex.Message; }
+
+            return co;
+        }
 
 
         //OrderLine
@@ -998,8 +1029,90 @@ namespace GGRMLib.DataAccess
             return dtProducts;
         }
 
+        public Product GetProductByID(int id, out string status)
+        {
+            Product p = new Product();
+            status = "Failed to retrieve product";
+            try
+            {
+                using (IDbConnection connection = new SqlConnection(GlobalConfig.ConString("GGRM")))
+                {
+                    connection.Open();
+                    SqlCommand cmd = new SqlCommand();
+                    cmd.Connection = (SqlConnection)connection;
+                    cmd.CommandText = "SELECT product.id, prodName, prodDescription, prodBrand, prodSize FROM product WHERE id = " + id.ToString();
+                    SqlDataReader records = cmd.ExecuteReader();
+                    if (records.Read())
+                    {
+                        p.ID = (int)records[0];
+                        p.ProdName = records[1].ToString();
+                        p.ProdDescription = records[2].ToString();
+                        p.ProdBrand = records[3].ToString();
+                        p.ProdSize = (decimal)records[4];
+                    }
+                }
+                status = "Getting product succeeded.";
+            }
+            catch (Exception ex) { status = ex.Message; }
 
+            return p;
+        }
+
+        public Product EditProduct(Product p, out string status)
+        {
+            status = "Product update failed.";
+            try
+            {
+                using (IDbConnection connection = new SqlConnection(GlobalConfig.ConString("GGRM")))
+                {
+                    connection.Open();
+                    SqlCommand cmd = new SqlCommand();
+                    cmd.Connection = (SqlConnection)connection;
+                    cmd.CommandText = "UPDATE product SET" +
+                        " prodName = '" + p.ProdName + "',"
+                        + " prodDescription = '" + p.ProdDescription + "',"
+                        + " prodBrand = '" + p.ProdBrand + "',"
+                        + " prodSize = '" + p.ProdSize + "'"
+                        + " prodPrice = '" + p.ProdPrice + "'"
+                        + " prodMeasure = '" + p.ProdMeasure + "'"
+                        + " WHERE id = " + p.ID;
+                    cmd.ExecuteNonQuery();
+                }
+                status = "Product edit succeeded.";
+            }
+            catch (Exception ex) { status = ex.Message; }
+            return p;
+        }
         //Authentication
+
+        public Product CreateProduct(Product p, out string status)
+        {
+            status = "Creating product failed";
+            
+            try
+            {
+                using (IDbConnection connection = new SqlConnection(GlobalConfig.ConString("GGRM")))
+                {
+                    connection.Open();
+                    SqlCommand cmd = new SqlCommand();
+                    cmd.Connection = (SqlConnection)connection;
+                    cmd.CommandText = "INSERT INTO product (prodName, prodDescription, prodBrand, prodSize, prodPrice, prodMeasure) VALUES ('" 
+                        + p.ProdName + "', '"
+                        + p.ProdDescription + "', '"
+                        + p.ProdBrand + "', '"
+                        + p.ProdSize + "', '"
+                        + p.ProdPrice + "', '"
+                        + p.ProdMeasure + "')";
+                    cmd.ExecuteNonQuery();
+                }
+                status = "Creating product succeeded.";
+            } catch (Exception ex)
+            {
+                status = ex.Message;
+            }
+
+            return p;
+        }
 
         public int AuthenticateLogin(string user, string password, out string status)
         {

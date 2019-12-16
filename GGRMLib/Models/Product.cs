@@ -17,5 +17,11 @@ namespace GGRMLib.Models
         public string ProdDescription { get; set; }
 
         public string ProdBrand { get; set; }
+
+        public decimal ProdSize { get; set; }
+
+        public decimal ProdPrice { get; set; }
+
+        public string ProdMeasure { get; set; }
     }
 }
