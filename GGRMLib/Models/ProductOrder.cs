@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 
 namespace GGRMLib.Models
 {
+    //Coded by: Macklem Curtis
+    //Date: Nov/Dec 2019
     public class ProductOrder
     {
         public ProductOrder()
@@ -15,8 +17,6 @@ namespace GGRMLib.Models
             orderLines = new BindingList<OrderLine>();
 
             PordDateCreated = DateTime.UtcNow;
-            PordDateOrdered = null;
-            PordDateReceived = null;
             PordStatus = "Requested";
             PordNumber = "0";
             PordPaid = false;
@@ -31,9 +31,9 @@ namespace GGRMLib.Models
 
         public DateTime PordDateCreated { get; set; }
 
-        public DateTime? PordDateOrdered { get; set; }
+        public DateTime PordDateOrdered { get; set; }
 
-        public DateTime? PordDateReceived { get; set; }
+        public DateTime PordDateReceived { get; set; }
 
         public bool PordPaid { get; set; }
 

@@ -8,6 +8,10 @@ using System.Threading.Tasks;
 
 namespace GGRMLib
 {
+
+    //Coded by: Macklem Curtis
+    //Date: Nov/Dec 2019
+
     public static class GlobalConfig
     {
         public static SqlConnector Connection { get; private set; }

@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 namespace GGRMLib.Models
 {
+    //Coded by: Macklem Curtis
+    //Date: Nov/Dec 2019
     public class OrderLine
     {
         public OrderLine()
@@ -13,6 +15,7 @@ namespace GGRMLib.Models
             ProdOrderID = null;
             OrderID = null;
             ServiceOrderID = null;
+            ColWarranty = false;
         }
         public int ID { get; set; }
 
@@ -35,6 +38,8 @@ namespace GGRMLib.Models
         public bool ColOrderReq { get; set; }
 
         public string ColNote { get; set; }
+
+        public bool? ColWarranty { get; set; }
 
         public int InventoryID { get; set; }
 

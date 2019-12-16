@@ -6,8 +6,11 @@ using System.Threading.Tasks;
 
 namespace GGRMLib.Models
 {
+    //Coded by: Macklem Curtis
+    //Date: Nov/Dec 2019
     public class Employee
     {
+
         public Employee()
         {
             EmpDisabled = false;

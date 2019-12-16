@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 
 namespace GGRMLib.DataAccess
 {
+    //Coded by: Macklem Curtis
+    //Date: Nov/Dec 2019
     public interface IDataConnection
     {
         OrderLine CreateCOLine(OrderLine col, out string status);

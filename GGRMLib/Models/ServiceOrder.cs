@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 
 namespace GGRMLib.Models
 {
+    //Coded by: Macklem Curtis
+    //Date: Nov/Dec 2019
     public class ServiceOrder
     {
         public ServiceOrder()
@@ -31,16 +33,21 @@ namespace GGRMLib.Models
 
         public string SerOrdStatus { get; set; }
 
+        public string SerOrdDiagnosis { get; set; }
+
         public int CustOrdID { get; set; }
 
         public int ServiceID { get; set; }
 
         public int EquipID { get; set; }
 
+        public string EquipName { get; set; }
+
         public int RequestingEmpID { get; set; }
 
         public int TechnicianID { get; set; }
 
         public BindingList<OrderLine> serviceParts { get; set; }
+        public string SerOrdRepairNote { get; set; }
     }
 }

@@ -8,6 +8,9 @@ namespace GGRMLib.Models
 {
     public class Customer
     {
+        //Coded by: Macklem Curtis
+        //Date: Nov/Dec 2019
+
         public int ID { get; set; }
 
         public Customer()
