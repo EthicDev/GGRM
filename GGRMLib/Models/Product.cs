@@ -8,7 +8,7 @@ namespace GGRMLib.Models
 {
     //Coded by: Macklem Curtis
     //Date: Nov/Dec 2019
-    class Product
+    public class Product
     {
         public int ID { get; set; }
 
