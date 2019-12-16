@@ -17,6 +17,8 @@ namespace GGRMLib.Models
 
         public int ID { get; set; }
 
+        public string SerOrdNumber { get; set; }
+
         public string ServiceName { get; set; }
 
         public DateTime SerOrdDateIn { get; set; }
@@ -37,7 +39,7 @@ namespace GGRMLib.Models
 
         public int RequestingEmpID { get; set; }
 
-        public int TechinicianID { get; set; }
+        public int TechnicianID { get; set; }
 
         public BindingList<OrderLine> serviceParts { get; set; }
     }

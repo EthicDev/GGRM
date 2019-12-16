@@ -443,7 +443,7 @@ namespace GGRMLib.DataAccess
             {
                 using (IDbConnection connection = new SqlConnection(GlobalConfig.ConString("GGRM")))
                 {
-                    if(emp.EmpDisabled == 1)
+                    if(emp.EmpDisabled)
                     {
                         connection.Open();
                         SqlCommand cmd = new SqlCommand();
@@ -526,7 +526,7 @@ namespace GGRMLib.DataAccess
                 using (SqlConnection conn = new SqlConnection(GlobalConfig.ConString("GGRM")))
                 {
                     conn.Open();
-                    string sqlCommand = "SELECT inventory.id, inventory.invQuantity, prodName AS [Name], prodDescription AS [Description], prodBrand AS [Brand], CONVERT(varchar,prodSize) + ' ' + prodMeasure AS [Size], invPrice AS [Price] FROM inventory JOIN product ON inventory.productID = product.id WHERE prodName LIKE '%" + searchString + "%'";
+                    string sqlCommand = "SELECT inventory.id, inventory.invQuantity, prodName AS [Name], prodDescription AS [Description], prodBrand AS [Brand], prodSize, prodMeasure, CONVERT(varchar,prodSize) + ' ' + prodMeasure AS [Size], invPrice AS [Price] FROM inventory JOIN product ON inventory.productID = product.id WHERE prodName LIKE '%" + searchString + "%'";
                     SqlDataAdapter sqlDa = new SqlDataAdapter(sqlCommand, conn);
                     sqlDa.Fill(dtInventory);
                 }
@@ -684,20 +684,22 @@ namespace GGRMLib.DataAccess
                     connection.Open();
                     SqlCommand cmd = new SqlCommand();
                     cmd.Connection = (SqlConnection)connection;
-                    cmd.CommandText = "SELECT id, serordDateIn, serordDateOut, serordIssue, serordWarranty, serordStatus, custOrdID, serviceID, equipID, empID FROM service_order WHERE id = " + id.ToString();
+                    cmd.CommandText = "SELECT id, serordNumber, serordDateIn, serordDateOut, serordIssue, serordWarranty, serordStatus, custOrdID, serviceID, equipID, requestingEmpID, technicianID FROM service_order WHERE id = " + id.ToString();
                     SqlDataReader records = cmd.ExecuteReader();
                     if (records.Read())
                     {
                         sord.ID = (int)records[0];
-                        sord.SerOrdDateIn = (DateTime)records[1];
-                        sord.SerOrdDateOut = (DateTime)records[2];
-                        sord.SerOrdIssue = (string)records[3];
-                        sord.SerOrdWarranty = (bool)records[4];
-                        sord.SerOrdStatus = (string)records[5];
-                        sord.CustOrdID = (int)records[6];
-                        sord.ServiceID = (int)records[7];
-                        sord.EquipID = (int)records[8];
-                        sord.RequestingEmpID = (int)records[9];
+                        sord.SerOrdNumber = (string)records[1];
+                        sord.SerOrdDateIn = (DateTime)records[2];
+                        sord.SerOrdDateOut = (DateTime)records[3];
+                        sord.SerOrdIssue = (string)records[4];
+                        sord.SerOrdWarranty = (bool)records[5];
+                        sord.SerOrdStatus = (string)records[6];
+                        sord.CustOrdID = (int)records[7];
+                        sord.ServiceID = (int)records[8];
+                        sord.EquipID = (int)records[9];
+                        sord.RequestingEmpID = (int)records[10];
+                        sord.TechnicianID = (int)records[11];
                     }
                 }
                 status = "Getting ServiceOrder succeeded.";
@@ -767,13 +769,11 @@ namespace GGRMLib.DataAccess
                     + " @pordDateReceived = '" + po.PordDateReceived + "',"
                     + " @pordStatus = '" + po.PordStatus + "',"
                     + " @pordPaid = " + po.PordPaid + ","
+                    + " @pordRequestSource = '" + po.PordRequestSource + "',"
                     + " @requestingEmpID = " + po.RequestingEmpID;
                 SqlDataReader records = cmd.ExecuteReader();
                 if (records.Read())
                 {
-                    //Not getting id from SQL properly
-                    //var test = records[0];
-                    //Console.WriteLine("@@DEBUG@@ Test value is equal to: "+test.ToString());
                     po.ID = Convert.ToInt32(records[0]);
                 }
             }
@@ -812,7 +812,7 @@ namespace GGRMLib.DataAccess
                 using (SqlConnection conn = new SqlConnection(GlobalConfig.ConString("GGRM")))
                 {
                     conn.Open();
-                    string sqlCommand = "SELECT prod_order.id, pordNumber AS [PO #], pordSupplierOrdNum AS [Supplier Order #], empFirst + ' ' + empLast AS [Ordering Employee], pordStatus AS [Status] FROM prod_order JOIN employee ON prod_order.orderingEmpID = employee.id WHERE pordStatus = 'Ordered'";
+                    string sqlCommand = "SELECT prod_order.id, pordNumber AS [PO #], pordSupplierOrdNum AS [Supplier Order #], pordDateOrdered as [Date Ordered], empFirst + ' ' + empLast AS [Ordering Employee], pordStatus AS [Status] FROM prod_order LEFT JOIN employee ON prod_order.orderingEmpID = employee.id WHERE pordStatus = 'Ordered'";
                     using SqlDataAdapter sqlDa = new SqlDataAdapter(sqlCommand, conn);
                     sqlDa.Fill(dtPendingProductOrders);
 
@@ -870,7 +870,8 @@ namespace GGRMLib.DataAccess
                     cmd.CommandText = "UPDATE prod_order SET" +
                         " pordSupplierOrdNum = '" + po.PordSupplierOrderNum + "',"
                         + " pordStatus = '" + po.PordStatus + "',"
-                        + " pordDateOrdered = '" + po.PordDateOrdered.ToString() + "'"
+                        + " pordDateOrdered = '" + po.PordDateOrdered.ToString() + "',"
+                        + " orderingEmpID = '" + po.OrderingEmpID + "'"
                         + " WHERE id = " + po.ID;
                     cmd.ExecuteNonQuery();
                 }
