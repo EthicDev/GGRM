@@ -8,6 +8,10 @@ namespace GGRMLib.Models
 {
     public class Employee
     {
+        public Employee()
+        {
+            EmpDisabled = false;
+        }
         public int ID { get; set; }
 
         public string EmpFirst { get; set; }
@@ -22,6 +26,6 @@ namespace GGRMLib.Models
 
         public string EmpPassword { internal get; set; }
 
-        public int EmpDisabled { get; set; }
+        public bool EmpDisabled { get; set; }
     }
 }
